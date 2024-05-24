@@ -9,10 +9,7 @@ import com.entidades.buenSabor.domain.entities.Empresa;
 
 import com.entidades.buenSabor.presentation.rest.Base.BaseControllerImp;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/empresa")
@@ -23,7 +20,7 @@ public class EmpresaController extends BaseControllerImp<Empresa, EmpresaDto, Lo
     }
 
     @PutMapping("/addSucursal/{idEmpresa}/{idSucursal}")
-    public ResponseEntity<EmpresaLargeDto> addSucursal(Long idEmpresa, Long idSucursal){
+    public ResponseEntity<EmpresaLargeDto> addSucursal(@PathVariable("idEmpresa") Long idEmpresa, @PathVariable("idSucursal") Long idSucursal){
         return ResponseEntity.ok(facade.addSucursal(idEmpresa,idSucursal));
     }
 }
