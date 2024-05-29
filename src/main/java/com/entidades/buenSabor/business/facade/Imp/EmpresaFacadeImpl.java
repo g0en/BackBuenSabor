@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmpresaFacadeImpl extends BaseFacadeImp<Empresa, EmpresaDto,Long> implements EmpresaFacade {
+public class EmpresaFacadeImpl extends BaseFacadeImp<Empresa, EmpresaDto, EmpresaDto,Long> implements EmpresaFacade {
 
-    public EmpresaFacadeImpl(BaseService<Empresa, Long> baseService, BaseMapper<Empresa, EmpresaDto>baseMapper) {
+    public EmpresaFacadeImpl(BaseService<Empresa, Long> baseService, BaseMapper<Empresa, EmpresaDto, EmpresaDto>baseMapper) {
         super(baseService, baseMapper);
     }
 

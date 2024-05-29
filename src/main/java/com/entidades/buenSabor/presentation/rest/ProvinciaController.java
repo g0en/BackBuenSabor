@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/provincia")
 @CrossOrigin("*")
-public class ProvinciaController extends BaseControllerImp<Provincia, ProvinciaDto,Long, ProvinciaFacadeImp>  {
+public class ProvinciaController extends BaseControllerImp<Provincia, ProvinciaDto, ProvinciaDto,Long, ProvinciaFacadeImp>  {
     public ProvinciaController(ProvinciaFacadeImp facade) {
         super(facade);
     }

@@ -1,9 +1,7 @@
 package com.entidades.buenSabor.domain.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -15,30 +13,29 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@ToString
+@ToString(exclude = {"subCategorias", "categoriaPadre"})
 @SuperBuilder
 public class Categoria extends Base{
 
     private String denominacion;
+    private boolean esInsumo;
 
     @ManyToMany(mappedBy = "categorias")
     @Builder.Default
     private Set<Sucursal> sucursales = new HashSet<>();
 
     @OneToMany
-    //SE AGREGA EL JOIN COLUMN PARA QUE JPA NO CREE LA TABLA INTERMEDIA EN UNA RELACION ONE TO MANY
-    //DE ESTA MANERA PONE EL FOREIGN KEY 'categoria_id' EN LA TABLA DE LOS MANY
     @JoinColumn(name = "categoria_id")
-    //SE AGREGA EL BUILDER.DEFAULT PARA QUE BUILDER NO SOBREESCRIBA LA INICIALIZACION DE LA LISTA
     @Builder.Default
     private Set<Articulo> articulos = new HashSet<>();
 
-
-    @OneToMany
-    //SE AGREGA EL JOIN COLUMN PARA QUE JPA NO CREE LA TABLA INTERMEDIA EN UNA RELACION ONE TO MANY
-    //DE ESTA MANERA PONE EL FOREIGN KEY 'categoria_id' EN LA TABLA DE LOS MANY
-    @JoinColumn(name = "categoria_id")
-    //SE AGREGA EL BUILDER.DEFAULT PARA QUE BUILDER NO SOBREESCRIBA LA INICIALIZACION DE LA LISTA
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "categoriaPadre")
+    @JsonIgnoreProperties("categoriaPadre")
     @Builder.Default
     private Set<Categoria> subCategorias = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_padre_id")
+    @JsonIgnoreProperties("subCategorias")
+    private Categoria categoriaPadre;
 }

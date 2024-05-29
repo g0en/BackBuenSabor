@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/domicilio")
 @CrossOrigin("*")
-public class DomicilioController extends BaseControllerImp<Domicilio, DomicilioDto,Long, DomicilioFacadeImp> {
+public class DomicilioController extends BaseControllerImp<Domicilio, DomicilioDto, DomicilioDto,Long, DomicilioFacadeImp> {
     public DomicilioController(DomicilioFacadeImp facade) {
         super(facade);
     }

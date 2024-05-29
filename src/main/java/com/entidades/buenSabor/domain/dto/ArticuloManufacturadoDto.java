@@ -12,9 +12,10 @@ import java.util.Set;
 @NoArgsConstructor
 @Setter
 @Getter
-public class CategoriaDto extends BaseDto{
-    private String denominacion;
-    private boolean esInsumo;
-    private Set<SucursalShortDto> sucursales = new HashSet<>();
-    private Set<CategoriaDto> subCategorias = new HashSet<>();
+public class ArticuloManufacturadoDto extends ArticuloDto{
+    private String descripcion;
+    private Integer tiempoEstimadoMinutos;
+    private String preparacion;
+
+    private Set<ArticuloManufacturadoDetalleDto> detalles = new HashSet<>();
 }

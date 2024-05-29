@@ -17,7 +17,7 @@ import java.util.Set;
 @ToString
 @SuperBuilder
 //@Audited
-public class ArticuloManufacturado  extends Articulo{
+public class ArticuloManufacturado extends Articulo{
 
     private String descripcion;
     private Integer tiempoEstimadoMinutos;

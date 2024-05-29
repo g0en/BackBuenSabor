@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class PaisFacadeImp extends BaseFacadeImp<Pais, PaisDto,Long> implements PaisFacade {
-    public PaisFacadeImp(BaseService<Pais, Long> baseService, BaseMapper<Pais, PaisDto> baseMapper) {
+public class PaisFacadeImp extends BaseFacadeImp<Pais, PaisDto, PaisDto, Long> implements PaisFacade {
+    public PaisFacadeImp(BaseService<Pais, Long> baseService, BaseMapper<Pais, PaisDto, PaisDto> baseMapper) {
         super(baseService, baseMapper);
     }
 }

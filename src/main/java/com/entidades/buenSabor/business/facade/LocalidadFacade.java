@@ -5,7 +5,7 @@ import com.entidades.buenSabor.domain.dto.LocalidadDto;
 
 import java.util.List;
 
-public interface LocalidadFacade extends BaseFacade<LocalidadDto, Long> {
+public interface LocalidadFacade extends BaseFacade<LocalidadDto, LocalidadDto, Long> {
 
     List<LocalidadDto> findByProvinciaId(Long id);
 }

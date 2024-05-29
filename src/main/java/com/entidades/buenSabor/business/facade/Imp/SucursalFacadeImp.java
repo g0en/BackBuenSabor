@@ -9,8 +9,8 @@ import com.entidades.buenSabor.domain.entities.Sucursal;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SucursalFacadeImp extends BaseFacadeImp<Sucursal, SucursalDto,Long> implements Sucursalfacade {
-    public SucursalFacadeImp(BaseService<Sucursal, Long> baseService, BaseMapper<Sucursal, SucursalDto> baseMapper) {
+public class SucursalFacadeImp extends BaseFacadeImp<Sucursal, SucursalDto, SucursalDto,Long> implements Sucursalfacade {
+    public SucursalFacadeImp(BaseService<Sucursal, Long> baseService, BaseMapper<Sucursal, SucursalDto, SucursalDto> baseMapper) {
         super(baseService, baseMapper);
     }
 

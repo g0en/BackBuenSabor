@@ -5,7 +5,7 @@ import com.entidades.buenSabor.domain.entities.Sucursal;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", uses = DomicilioMapper.class )
-public interface SucursalMapper extends BaseMapper<Sucursal, SucursalDto>{
+public interface SucursalMapper extends BaseMapper<Sucursal, SucursalDto, SucursalDto>{
 
     SucursalDto toDTO(Sucursal source);
 

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/sucursal")
 @CrossOrigin("*")
-public class SucursalController extends BaseControllerImp<Sucursal, SucursalDto,Long, SucursalFacadeImp> {
+public class SucursalController extends BaseControllerImp<Sucursal, SucursalDto, SucursalDto,Long, SucursalFacadeImp> {
     public SucursalController(SucursalFacadeImp facade) {
         super(facade);
     }

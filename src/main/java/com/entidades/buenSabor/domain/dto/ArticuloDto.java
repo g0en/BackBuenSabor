@@ -7,14 +7,14 @@ import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-public class CategoriaDto extends BaseDto{
-    private String denominacion;
-    private boolean esInsumo;
-    private Set<SucursalShortDto> sucursales = new HashSet<>();
-    private Set<CategoriaDto> subCategorias = new HashSet<>();
+public class ArticuloDto extends BaseDto{
+    protected String denominacion;
+    protected Double precioVenta;
+    protected Set<ImagenArticuloDto> imagenes = new HashSet<>();
+    protected UnidadMedidaDto unidadMedida;
+    protected CategoriaDto categoria;
 }

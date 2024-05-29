@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class LocalidadFacadeImp extends BaseFacadeImp<Localidad, LocalidadDto, Long> implements LocalidadFacade {
-    public LocalidadFacadeImp(BaseService<Localidad, Long> baseService, BaseMapper<Localidad, LocalidadDto> baseMapper) {
+public class LocalidadFacadeImp extends BaseFacadeImp<Localidad, LocalidadDto, LocalidadDto, Long> implements LocalidadFacade {
+    public LocalidadFacadeImp(BaseService<Localidad, Long> baseService, BaseMapper<Localidad, LocalidadDto, LocalidadDto> baseMapper) {
         super(baseService, baseMapper);
     }
 
