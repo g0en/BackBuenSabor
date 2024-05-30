@@ -17,5 +17,5 @@ public class ArticuloManufacturadoDto extends ArticuloDto{
     private Integer tiempoEstimadoMinutos;
     private String preparacion;
 
-    private Set<ArticuloManufacturadoDetalleDto> detalles = new HashSet<>();
+    private Set<ArticuloManufacturadoDetalleDto> articuloManufacturadoDetalles = new HashSet<>();
 }
