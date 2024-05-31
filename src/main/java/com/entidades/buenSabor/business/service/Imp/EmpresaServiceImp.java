@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmpresaServiceImpl extends BaseServiceImp<Empresa,Long> implements EmpresaService {
+public class EmpresaServiceImp extends BaseServiceImp<Empresa,Long> implements EmpresaService {
 
     @Autowired
     SucursalService sucursalService;

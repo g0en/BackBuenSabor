@@ -4,10 +4,7 @@ import com.entidades.buenSabor.business.service.ArticuloInsumoService;
 import com.entidades.buenSabor.business.service.ArticuloManufacturadoService;
 import com.entidades.buenSabor.business.service.Base.BaseServiceImp;
 import com.entidades.buenSabor.domain.entities.*;
-import com.entidades.buenSabor.repositories.ArticuloManufacturadoRepository;
-import com.entidades.buenSabor.repositories.CategoriaRepository;
-import com.entidades.buenSabor.repositories.ImagenArticuloRepository;
-import com.entidades.buenSabor.repositories.UnidadMedidaRepository;
+import com.entidades.buenSabor.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +30,9 @@ public class ArticuloManufacturadoServiceImp extends BaseServiceImp<ArticuloManu
 
     @Autowired
     private ArticuloManufacturadoRepository articuloManufacturadoRepository;
+
+    @Autowired
+    private ArticuloManufacturadoDetalleRepository articuloManufacturadoDetalleRepository;
 
 
     @Override
@@ -184,5 +184,22 @@ public class ArticuloManufacturadoServiceImp extends BaseServiceImp<ArticuloManu
         }
 
         return super.update(articuloManufacturado, id);
+    }
+
+
+    @Override
+    public void deleteById(Long id) {
+        ArticuloManufacturado articuloManufacturado = this.articuloManufacturadoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("El arituclo manufacturado con id: "+ id + " no existe."));
+
+        for(ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()){
+            ArticuloManufacturadoDetalle detalleDelete = this.articuloManufacturadoDetalleRepository.findById(detalle.getId())
+                    .orElseThrow(() -> new RuntimeException("El detalle con id: "+ detalle.getId() + " no existe."));
+
+            detalle.setEliminado(true);
+            this.articuloManufacturadoDetalleRepository.save(detalle);
+        }
+
+        super.deleteById(id);
     }
 }

@@ -1,6 +1,6 @@
 package com.entidades.buenSabor.presentation.rest;
 
-import com.entidades.buenSabor.business.facade.Imp.EmpresaFacadeImpl;
+import com.entidades.buenSabor.business.facade.Imp.EmpresaFacadeImp;
 
 import com.entidades.buenSabor.domain.dto.EmpresaDto;
 
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/empresa")
 @CrossOrigin("*")
-public class EmpresaController extends BaseControllerImp<Empresa, EmpresaDto, EmpresaDto,Long, EmpresaFacadeImpl> {
-    public EmpresaController(EmpresaFacadeImpl facade) {
+public class EmpresaController extends BaseControllerImp<Empresa, EmpresaDto, EmpresaDto,Long, EmpresaFacadeImp> {
+    public EmpresaController(EmpresaFacadeImp facade) {
         super(facade);
     }
 

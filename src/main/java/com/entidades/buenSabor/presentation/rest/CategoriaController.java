@@ -5,9 +5,7 @@ import com.entidades.buenSabor.domain.dto.CategoriaDto;
 import com.entidades.buenSabor.domain.dto.CategoriaGetDto;
 import com.entidades.buenSabor.domain.entities.Categoria;
 import com.entidades.buenSabor.presentation.rest.Base.BaseControllerImp;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/categoria")
@@ -15,5 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoriaController extends BaseControllerImp<Categoria, CategoriaDto, CategoriaGetDto, Long, CategoriaFacadeImp> {
     public CategoriaController(CategoriaFacadeImp facade) {
         super(facade);
+    }
+
+    @DeleteMapping("/baja/{idCategoria}/{idSucursal}")
+    public void deleteInSucursales(@PathVariable("idCategoria") Long idCategoria, @PathVariable("idSucursal") Long idSucursal){
+        facade.deleteInSucursales(idCategoria, idSucursal);
     }
 }

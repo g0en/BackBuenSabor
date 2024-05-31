@@ -2,18 +2,13 @@ package com.entidades.buenSabor.business.service.Imp;
 
 import com.entidades.buenSabor.business.service.ArticuloInsumoService;
 import com.entidades.buenSabor.business.service.Base.BaseServiceImp;
-import com.entidades.buenSabor.domain.entities.ArticuloInsumo;
-import com.entidades.buenSabor.domain.entities.Categoria;
-import com.entidades.buenSabor.domain.entities.ImagenArticulo;
-import com.entidades.buenSabor.domain.entities.UnidadMedida;
-import com.entidades.buenSabor.repositories.ArticuloInsumoRepository;
-import com.entidades.buenSabor.repositories.CategoriaRepository;
-import com.entidades.buenSabor.repositories.ImagenArticuloRepository;
-import com.entidades.buenSabor.repositories.UnidadMedidaRepository;
+import com.entidades.buenSabor.domain.entities.*;
+import com.entidades.buenSabor.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,6 +25,9 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
 
     @Autowired
     private ArticuloInsumoRepository articuloInsumoRepository;
+
+    @Autowired
+    private ArticuloManufacturadoDetalleRepository articuloManufacturadoDetalleRepository;
 
     @Override
     public ArticuloInsumo create(ArticuloInsumo articuloInsumo) {
@@ -151,6 +149,23 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
 
     @Override
     public void deleteById(Long id) {
+        ArticuloInsumo insumo = this.articuloInsumoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("El articulo insumo: " + id + " no existe."));
+
+        boolean hayDetalles = false;
+
+        //Verificar si el insumo tiene detalles asociado
+        List<ArticuloManufacturadoDetalle> insumoEsUtilizado = this.articuloManufacturadoDetalleRepository.getByArticuloInsumo(insumo);
+
+        for(ArticuloManufacturadoDetalle detalles : insumoEsUtilizado){
+            if(detalles.isEliminado()){
+                hayDetalles = true;
+                break;
+            }
+        }
+        if (!hayDetalles) {
+            throw new RuntimeException("No se puede eliminar el articulo porque está presente en un detalle");
+        }
 
         super.deleteById(id);
     }
