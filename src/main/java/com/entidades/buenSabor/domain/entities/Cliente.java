@@ -20,6 +20,15 @@ import java.util.Set;
 //@Audited
 public class Cliente extends Persona{
 
+    @ManyToMany
+    //SE AGREGA EL JOIN TABLE PARA QUE JPA CREE LA TABLA INTERMEDIA EN UNA RELACION MANY TO MANY
+    @JoinTable(name = "cliente_domicilio",
+            joinColumns = @JoinColumn(name = "cliente_id"),
+            inverseJoinColumns = @JoinColumn(name = "domicilio_id"))
+    //SE AGREGA EL BUILDER.DEFAULT PARA QUE BUILDER NO SOBREESCRIBA LA INICIALIZACION DE LA LISTA
+    @Builder.Default
+    protected Set<Domicilio> domicilios = new HashSet<>();
+
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     //SE AGREGA EL BUILDER.DEFAULT PARA QUE BUILDER NO SOBREESCRIBA LA INICIALIZACION DE LA LISTA

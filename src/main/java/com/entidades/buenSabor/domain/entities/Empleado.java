@@ -17,8 +17,6 @@ import java.util.Set;
 //@Audited
 public class Empleado extends Persona{
 
-    private Rol tipoEmpleado;
-
     @OneToMany(mappedBy = "empleado", cascade = CascadeType.REFRESH, orphanRemoval = true)
     @ToString.Exclude
     @Builder.Default
