@@ -48,7 +48,9 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
         }
 
         //Inicializar estado
-        pedido.setEstado(Estado.PENDIENTE);
+        if(pedido.getEstado() == null){
+            pedido.setEstado(Estado.PENDIENTE);
+        }
 
         //Añadir sucursal
         Sucursal sucursal = this.sucursalRepository.findById(pedido.getSucursal().getId())
