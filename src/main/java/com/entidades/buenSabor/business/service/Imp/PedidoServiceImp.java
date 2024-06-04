@@ -76,7 +76,7 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
         }
 
         //Añadir total costo
-        pedido.setTotalCosto(totalCosto(articulos, detallePedidos));
+        pedido.setTotalCosto(totalCosto(detallePedidos));
 
         //Añadir fecha del pedido
         pedido.setFechaPedido(LocalDate.now());
@@ -90,7 +90,7 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
         return super.create(pedido);
     }
 
-    public Double totalCosto(Set<Articulo> articulos, Set<DetallePedido> detallePedidos){
+    public Double totalCosto(Set<DetallePedido> detallePedidos){
         Double totalCosto = 0.;
         
         for(DetallePedido detalles : detallePedidos){
@@ -108,26 +108,6 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
                 totalCosto += articuloInsumo.getPrecioCompra() * detalles.getCantidad();
             }
         }
-        
-        
-        
-
-        /*for(Articulo articulo : articulos){
-            ArticuloManufacturado articuloManufacturado = this.articuloManufacturadoRepository.findById(articulo.getId()).get();
-            if(articuloManufacturado != null){
-                for(ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()){
-                    ArticuloInsumo insumo = detalle.getArticuloInsumo();
-                    totalCosto += insumo.getPrecioCompra() * detalle.getCantidad();
-                }
-            }else{
-                ArticuloInsumo articuloInsumo = this.articuloInsumoService.getById(articulo.getId());
-                for(DetallePedido detalle : detallePedidos){
-                    if(detalle.getArticulo().getId() == articuloInsumo.getId()){
-                        totalCosto += totalCosto + (articuloInsumo.getPrecioCompra() * detalle.getCantidad());
-                    }
-                }
-            }
-        }*/
 
         return totalCosto;
     }
