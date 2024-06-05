@@ -5,6 +5,7 @@ import com.entidades.buenSabor.business.service.ArticuloManufacturadoService;
 import com.entidades.buenSabor.business.service.Base.BaseServiceImp;
 import com.entidades.buenSabor.business.service.PedidoService;
 import com.entidades.buenSabor.business.service.SucursalService;
+import com.entidades.buenSabor.domain.dto.PedidoDto;
 import com.entidades.buenSabor.domain.entities.*;
 import com.entidades.buenSabor.domain.enums.Estado;
 import com.entidades.buenSabor.domain.enums.FormaPago;
@@ -37,6 +38,12 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
 
     @Autowired
     private ArticuloManufacturadoRepository articuloManufacturadoRepository;
+
+    @Autowired
+    private ClienteRepository clienteRepository;
+
+    @Autowired
+    private EmpleadoRepository empleadoRepository;
 
     @Override
     public Pedido create(Pedido pedido) {
@@ -98,6 +105,27 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
         pedido.setDetallePedidos(detallePedidos);
 
         return super.create(pedido);
+    }
+
+    public Pedido create(PedidoDto pedido) {
+        var sucursal = sucursalRepository.getById(pedido.getSucursalId());
+        var cliente = clienteRepository.getById(pedido.getClienteId());
+        //var empleado = empleadoRepository.getById(pedido.getEmpleadoId());
+
+        Pedido.PedidoBuilder<?, ?> pedidoEntidad = Pedido.builder();
+
+        pedidoEntidad.tipoEnvio( pedido.getTipoEnvio() );
+        pedidoEntidad.formaPago( pedido.getFormaPago() );
+        //pedidoEntidad.domicilio( domicilioDtoToDomicilio( source.getDomicilio() ) );
+        //pedidoEntidad.detallePedidos(pedido.getDetallePedidos());
+        pedidoEntidad.sucursal(sucursal);
+        pedidoEntidad.cliente(cliente);
+        //pedidoEntidad.empleado(empleado);
+        pedidoEntidad.estado(pedido.getEstado());
+
+        pedidoEntidad.fechaPedido(LocalDate.now());
+
+        return super.create(pedidoEntidad.build());
     }
 
     public Double totalCosto(Set<DetallePedido> detallePedidos){

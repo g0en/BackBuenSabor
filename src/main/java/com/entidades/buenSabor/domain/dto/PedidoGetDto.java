@@ -28,9 +28,9 @@ public class PedidoGetDto extends BaseDto{
     private FormaPago formaPago;
     @Schema(type = "string", format = "date", pattern = "yyyy-MM-dd")
     private LocalDate fechaPedido;
-    //private DomicilioDto domicilio;
+    private DomicilioDto domicilio;
     private SucursalShortDto sucursal;
-    // Factura, cliente
+    private ClienteDto cliente;
     private Set<PedidoDetalleDto> detallePedidos = new HashSet<>();
-    //private EmpleadoDto empleado;
+    private EmpleadoDto empleado;
 }

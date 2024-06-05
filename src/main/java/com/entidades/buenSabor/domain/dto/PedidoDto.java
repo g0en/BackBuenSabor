@@ -1,5 +1,7 @@
 package com.entidades.buenSabor.domain.dto;
 
+import com.entidades.buenSabor.domain.entities.DetallePedido;
+import com.entidades.buenSabor.domain.enums.Estado;
 import com.entidades.buenSabor.domain.enums.FormaPago;
 import com.entidades.buenSabor.domain.enums.TipoEnvio;
 import lombok.AllArgsConstructor;
@@ -15,14 +17,17 @@ import java.util.Set;
 @Getter
 @Setter
 public class PedidoDto extends BaseDto{
-    private Double total;
+    private Estado estado;
     private TipoEnvio tipoEnvio;
     private FormaPago formaPago;
 
-    // private DomicilioDto domicilio;
-    private SucursalShortDto sucursal;
+    private DomicilioDto domicilio;
 
-    // Factura, cliente
-    private Set<PedidoDetalleDto> detallePedidos = new HashSet<>();
-    //private EmpleadoDto empleado;
+    private Long sucursalId;
+
+    private Long clienteId;
+
+    private Set<DetallePedido> detallePedidos = new HashSet<>();
+
+    private Long empleadoId;
 }
