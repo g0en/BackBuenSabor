@@ -61,6 +61,7 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
         //Añadir detalles del pedido
         Set<DetallePedido> detallePedidos = new HashSet<>();
         Set<Articulo> articulos = new HashSet<>();
+        Double total = 0.;
 
         for(DetallePedido detalle: pedido.getDetallePedidos()){
             DetallePedido detallePedido = detalle;
@@ -71,10 +72,17 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
             detallePedidos.add(detallePedido);
 
             //Calcular el total del pedido
-            pedido.setTotal(pedido.getTotal() + detallePedido.getSubTotal());
+            total += detallePedido.getSubTotal();
 
             //Añadir articulos
             articulos.add(articulo);
+        }
+
+        //Validar total de la venta
+        if(!total.equals(pedido.getTotal())){
+            System.out.println(total);
+            System.out.println(pedido.getTotal());
+            throw new RuntimeException("Error: El total del pedido difieren.");
         }
 
         //Añadir total costo

@@ -30,7 +30,7 @@ public class Pedido extends Base{
     private Estado estado;
     private TipoEnvio tipoEnvio;
     private FormaPago formaPago;
-    private LocalDate fechaPedido = LocalDate.now();
+    private LocalDate fechaPedido;
 
     @ManyToOne
     private Domicilio domicilio;

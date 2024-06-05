@@ -165,6 +165,28 @@ public class BuenSaborApplication {
 			this.categoriaRepository.save(categoriaLacteos);
 			this.categoriaRepository.save(categoriaSalsas);
 
+			Categoria categoriaHamburguesa = Categoria.builder()
+					.denominacion("Hamburguesas")
+					.esInsumo(false)
+					.sucursales(sucursales)
+					.build();
+
+			Categoria categoriaCarnes = Categoria.builder()
+					.denominacion("Carnes")
+					.esInsumo(false)
+					.sucursales(sucursales)
+					.build();
+
+			Categoria categoriaFrescos = Categoria.builder()
+					.denominacion("Frescos")
+					.esInsumo(false)
+					.sucursales(sucursales)
+					.build();
+
+			this.categoriaRepository.save(categoriaHamburguesa);
+			this.categoriaRepository.save(categoriaCarnes);
+			this.categoriaRepository.save(categoriaFrescos);
+
 			UnidadMedida unidadMedidaGramos = UnidadMedida.builder()
 					.denominacion("Gramos")
 					.build();
@@ -232,6 +254,49 @@ public class BuenSaborApplication {
 			this.articuloInsumoRepository.save(queso);
 			this.articuloInsumoRepository.save(salsaTomate);
 
+
+			ImagenArticulo imgCarneMolida = ImagenArticulo.builder()
+					.url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd16u1Ud_zxyc_fO_A1OC4ywJoftP4nDKt7g&s")
+					.build();
+
+			Set<ImagenArticulo> imgCarneMolidas = new HashSet<>();
+			imgCarneMolidas.add(imgCarneMolida);
+
+			ArticuloInsumo carneMolida = ArticuloInsumo.builder()
+					.denominacion("Carne Molida")
+					.precioCompra(300.)
+					.imagenes(imgCarneMolidas)
+					.unidadMedida(unidadMedidaGramos)
+					.categoria(categoriaCarnes)
+					.stockActual(20)
+					.stockMaximo(100)
+					.stockMinimo(1)
+					.esParaElaborar(true)
+					.build();
+
+			ImagenArticulo imgTomate = ImagenArticulo.builder()
+					.url("https://bigarsa.com.ar/wp-content/uploads/2024/04/pic_1549256667_1549256706.jpg")
+					.build();
+
+			Set<ImagenArticulo> imgTomates = new HashSet<>();
+			imgTomates.add(imgTomate);
+
+			ArticuloInsumo tomate = ArticuloInsumo.builder()
+					.denominacion("Tomate")
+					.precioCompra(300.)
+					.imagenes(imgTomates)
+					.unidadMedida(unidadMedidaGramos)
+					.categoria(categoriaFrescos)
+					.stockActual(20)
+					.stockMaximo(100)
+					.stockMinimo(1)
+					.esParaElaborar(true)
+					.build();
+
+			this.articuloInsumoRepository.save(carneMolida);
+			this.articuloInsumoRepository.save(tomate);
+
+
 			ImagenArticulo imgPizza = ImagenArticulo.builder()
 					.url("https://media.istockphoto.com/id/1442417585/es/foto/persona-recibiendo-un-pedazo-de-pizza-de-pepperoni-con-queso.jpg?s=612x612&w=0&k=20&c=Uk4fj96OIDxE4v2S5sRRXRY_gZ899_TE6jGD-T-TysI=")
 					.build();
@@ -270,6 +335,51 @@ public class BuenSaborApplication {
 					.build();
 
 			this.articuloManufacturadoRepository.save(articuloManufacturado);
+
+
+			ImagenArticulo imgHamburguesa = ImagenArticulo.builder()
+					.url("https://resizer.glanacion.com/resizer/v2/hamburguesa-blt-de-john-john-burger-bacon-lettuce-RHVGX3MHVRB7VGEXBEVCCZHW5I.jpg?auth=53776ee5a203ae1fbe457df3473f7c2d9470016ad51a458c73c5b950966a4f57&width=768&quality=70&smart=false")
+					.build();
+
+			Set<ImagenArticulo> imgHamburguesas = new HashSet<>();
+			imgHamburguesas.add(imgHamburguesa);
+
+			ArticuloManufacturadoDetalle detalleH1 = ArticuloManufacturadoDetalle.builder()
+					.cantidad(1)
+					.articuloInsumo(harina)
+					.build();
+			ArticuloManufacturadoDetalle detalleH2 = ArticuloManufacturadoDetalle.builder()
+					.cantidad(2)
+					.articuloInsumo(queso)
+					.build();
+			ArticuloManufacturadoDetalle detalleH3 = ArticuloManufacturadoDetalle.builder()
+					.cantidad(2)
+					.articuloInsumo(tomate)
+					.build();
+			ArticuloManufacturadoDetalle detalleH4 = ArticuloManufacturadoDetalle.builder()
+					.cantidad(2)
+					.articuloInsumo(carneMolida)
+					.build();
+
+			Set<ArticuloManufacturadoDetalle> detallesH = new HashSet<>();
+			detallesH.add(detalleH1);
+			detallesH.add(detalleH2);
+			detallesH.add(detalleH3);
+			detallesH.add(detalleH4);
+
+			ArticuloManufacturado articuloManufacturadoH = ArticuloManufacturado.builder()
+					.denominacion("Hamburguesa con Queso")
+					.precioVenta(6000.)
+					.imagenes(imgHamburguesas)
+					.unidadMedida(unidadMedidaGramos)
+					.categoria(categoriaHamburguesa)
+					.descripcion("Hamburguesa con queso, tomate y lechuga.")
+					.tiempoEstimadoMinutos(10)
+					.preparacion("Cocinar carne y armar la hamburguesa.")
+					.articuloManufacturadoDetalles(detallesH)
+					.build();
+
+			this.articuloManufacturadoRepository.save(articuloManufacturadoH);
 		};
 	}
 

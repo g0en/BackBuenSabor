@@ -23,6 +23,6 @@ public class PedidoDto extends BaseDto{
     private SucursalShortDto sucursal;
 
     // Factura, cliente
-    private Set<PedidoDetalleDto> pedidoDetalles = new HashSet<>();
+    private Set<PedidoDetalleDto> detallePedidos = new HashSet<>();
     //private EmpleadoDto empleado;
 }
