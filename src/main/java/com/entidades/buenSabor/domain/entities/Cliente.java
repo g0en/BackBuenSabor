@@ -20,7 +20,7 @@ import java.util.Set;
 //@Audited
 public class Cliente extends Persona{
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     //SE AGREGA EL JOIN TABLE PARA QUE JPA CREE LA TABLA INTERMEDIA EN UNA RELACION MANY TO MANY
     @JoinTable(name = "cliente_domicilio",
             joinColumns = @JoinColumn(name = "cliente_id"),
