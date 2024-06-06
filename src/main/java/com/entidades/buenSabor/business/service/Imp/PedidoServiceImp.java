@@ -45,6 +45,9 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
     @Autowired
     private EmpleadoRepository empleadoRepository;
 
+    @Autowired
+    private LocalidadRepository localidadRepository;
+
     @Override
     public Pedido create(Pedido pedido) {
         //Verificar el tipo de envio y forma de pago
@@ -114,9 +117,18 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
 
         Pedido.PedidoBuilder<?, ?> pedidoEntidad = Pedido.builder();
 
+        Domicilio domicilio = Domicilio.builder()
+                .calle(pedido.getDomicilio().getCalle())
+                .numero(pedido.getDomicilio().getNumero())
+                .cp(pedido.getDomicilio().getCp())
+                .piso(pedido.getDomicilio().getPiso())
+                .nroDpto(pedido.getDomicilio().getNroDpto())
+                .localidad(localidadRepository.getById(pedido.getDomicilio().getLocalidadId()))
+                .build();
+
         pedidoEntidad.tipoEnvio( pedido.getTipoEnvio() );
         pedidoEntidad.formaPago( pedido.getFormaPago() );
-        //pedidoEntidad.domicilio( domicilioDtoToDomicilio( source.getDomicilio() ) );
+        pedidoEntidad.domicilio(domicilio);
         //pedidoEntidad.detallePedidos(pedido.getDetallePedidos());
         pedidoEntidad.sucursal(sucursal);
         pedidoEntidad.cliente(cliente);
