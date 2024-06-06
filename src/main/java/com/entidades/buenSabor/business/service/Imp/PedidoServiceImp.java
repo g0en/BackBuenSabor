@@ -1,5 +1,6 @@
 package com.entidades.buenSabor.business.service.Imp;
 
+import com.entidades.buenSabor.business.mapper.PedidoMapper;
 import com.entidades.buenSabor.business.service.ArticuloInsumoService;
 import com.entidades.buenSabor.business.service.ArticuloManufacturadoService;
 import com.entidades.buenSabor.business.service.Base.BaseServiceImp;
@@ -12,6 +13,7 @@ import com.entidades.buenSabor.domain.enums.FormaPago;
 import com.entidades.buenSabor.domain.enums.TipoEnvio;
 import com.entidades.buenSabor.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -47,6 +49,9 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
 
     @Autowired
     private LocalidadRepository localidadRepository;
+
+    @Autowired
+    private PedidoMapper pedidoMapper;
 
     @Override
     public Pedido create(Pedido pedido) {
@@ -126,15 +131,36 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
                 .localidad(localidadRepository.getById(pedido.getDomicilio().getLocalidadId()))
                 .build();
 
+        Set<DetallePedido> detallePedidos = new HashSet<>();
+        Set<Articulo> articulos = new HashSet<>();
+        Double total = 0.;
+
+        for(DetallePedido detalle: pedido.getDetallePedidos()){
+            DetallePedido detallePedido = detalle;
+            Articulo articulo = this.articuloRepository.findById(detalle.getArticulo().getId())
+                    .orElseThrow(() -> new RuntimeException("El articulo id: " + detalle.getArticulo().getId() + " no existe."));
+            detallePedido.setArticulo(articulo);
+            detallePedido.setSubTotal(detalle.getCantidad() * articulo.getPrecioVenta());
+            detallePedidos.add(detallePedido);
+
+            //Calcular el total del pedido
+            total += detallePedido.getSubTotal();
+
+            //Añadir articulos
+            articulos.add(articulo);
+        }
+
         pedidoEntidad.tipoEnvio( pedido.getTipoEnvio() );
         pedidoEntidad.formaPago( pedido.getFormaPago() );
         pedidoEntidad.domicilio(domicilio);
-        //pedidoEntidad.detallePedidos(pedido.getDetallePedidos());
+        pedidoEntidad.detallePedidos(pedido.getDetallePedidos());
         pedidoEntidad.sucursal(sucursal);
         pedidoEntidad.cliente(cliente);
         pedidoEntidad.empleado(empleado);
         pedidoEntidad.estado(pedido.getEstado());
-
+        pedidoEntidad.total(total);
+        pedidoEntidad.totalCosto(totalCosto(detallePedidos));
+        pedidoEntidad.horaEstimadaFinalizacion(horaEstimada(articulos));
         pedidoEntidad.fechaPedido(LocalDate.now());
 
         return super.create(pedidoEntidad.build());
@@ -142,7 +168,7 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
 
     public Double totalCosto(Set<DetallePedido> detallePedidos){
         Double totalCosto = 0.;
-        
+
         for(DetallePedido detalles : detallePedidos){
             Articulo articulo = detalles.getArticulo();
 
@@ -163,7 +189,17 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
     }
 
     public LocalTime horaEstimada(Set<Articulo> articulos){
-        return null;
+        Integer minutos = 0;
+        LocalTime horaEstimada = LocalTime.now();
+        for(Articulo articulo : articulos){
+            if(articulo instanceof ArticuloManufacturado){
+                minutos += ((ArticuloManufacturado) articulo).getTiempoEstimadoMinutos();
+            }
+        }
+
+        horaEstimada = horaEstimada.plusMinutes(minutos);
+
+        return horaEstimada;
     }
 
     @Override
