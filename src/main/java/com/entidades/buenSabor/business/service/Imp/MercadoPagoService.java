@@ -1,9 +1,9 @@
 package com.entidades.buenSabor.business.service.Imp;
 
-import com.entidades.buenSabor.business.mapper.PedidoMapper;
 import com.entidades.buenSabor.domain.dto.PedidoDto;
 import com.entidades.buenSabor.domain.entities.Pedido;
 import com.entidades.buenSabor.domain.entities.PreferenceMp;
+import com.entidades.buenSabor.repositories.PedidoRepository;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
@@ -23,24 +23,26 @@ import java.util.List;
 public class MercadoPagoService {
 
     @Autowired
-    private PedidoMapper pedidoMapper;
+    private PedidoRepository pedidoRepository;
 
     public PreferenceMp getPreferenciaIdMercadoPago(PedidoDto pedidoDto) {
-        Pedido pedido = pedidoMapper.toEntity(pedidoDto);
+        Pedido pedido = pedidoRepository.findLastPedido();
+        pedido.setEstado(pedidoDto.getEstado());
+
         try {
             // Configuración del Access Token
             MercadoPagoConfig.setAccessToken("TEST-6868831087152965-060612-f20879d73b51d173129c43f57c44c205-1844671669");
 
             // Crear item de la preferencia
             PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
-                    .id(String.valueOf(1234))
+                    .id(String.valueOf(pedido.getId()))
                     .title("Carrito de compras del Buen Sabor")
                     .description("Pedido realizado desde el carrito de compras del Buen Sabor")
                     .pictureUrl("https://www.bupasalud.com/sites/default/files/inline-images/bupa_598072389.jpg")
                     .categoryId("art")
                     .quantity(1)
                     .currencyId("ARS")
-                    .unitPrice(new BigDecimal(4000))
+                    .unitPrice(new BigDecimal(pedido.getTotal()))
                     .build();
             List<PreferenceItemRequest> items = new ArrayList<>();
             items.add(itemRequest);
@@ -65,6 +67,8 @@ public class MercadoPagoService {
             PreferenceMp mpPreference = new PreferenceMp();
             mpPreference.setStatusCode(preference.getResponse().getStatusCode());
             mpPreference.setId(preference.getId());
+
+            this.pedidoRepository.save(pedido);
 
             return mpPreference;
 

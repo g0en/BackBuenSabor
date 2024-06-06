@@ -2,7 +2,6 @@ package com.entidades.buenSabor.presentation.rest;
 
 import com.entidades.buenSabor.business.service.Imp.MercadoPagoService;
 import com.entidades.buenSabor.domain.dto.PedidoDto;
-import com.entidades.buenSabor.domain.entities.Pedido;
 import com.entidades.buenSabor.domain.entities.PreferenceMp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
