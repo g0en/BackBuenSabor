@@ -110,7 +110,7 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
     public Pedido create(PedidoDto pedido) {
         var sucursal = sucursalRepository.getById(pedido.getSucursalId());
         var cliente = clienteRepository.getById(pedido.getClienteId());
-        //var empleado = empleadoRepository.getById(pedido.getEmpleadoId());
+        var empleado = empleadoRepository.getById(pedido.getEmpleadoId());
 
         Pedido.PedidoBuilder<?, ?> pedidoEntidad = Pedido.builder();
 
@@ -120,7 +120,7 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
         //pedidoEntidad.detallePedidos(pedido.getDetallePedidos());
         pedidoEntidad.sucursal(sucursal);
         pedidoEntidad.cliente(cliente);
-        //pedidoEntidad.empleado(empleado);
+        pedidoEntidad.empleado(empleado);
         pedidoEntidad.estado(pedido.getEstado());
 
         pedidoEntidad.fechaPedido(LocalDate.now());

@@ -19,6 +19,10 @@ class LocalidadesDownloader implements CommandLineRunner {
 
     @Autowired
     private ClienteRepository clienteRepository;
+
+    @Autowired
+    private EmpleadoRepository empleadoRepository;
+
     @Autowired
     private ImagenPersonaRepository imagenPersonaRepository;
     @Autowired
@@ -388,11 +392,11 @@ class LocalidadesDownloader implements CommandLineRunner {
 
         this.articuloManufacturadoRepository.save(articuloManufacturadoH);
 
-        ImagenPersona imagenPersona = ImagenPersona.builder()
+        ImagenPersona imagenCliente = ImagenPersona.builder()
                 .url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAboyCmArPxbW8rOU6NKGEfdDyT-M_2PNLXw&s")
                 .build();
 
-        Domicilio domicilioPersona = Domicilio.builder()
+        Domicilio domicilioCliente = Domicilio.builder()
                 .calle("San Martín")
                 .numero(1025)
                 .cp(5501)
@@ -405,12 +409,26 @@ class LocalidadesDownloader implements CommandLineRunner {
                 .nombre("Juan")
                 .apellido("Perez")
                 .fechaNacimiento(LocalDate.of(2004,4,2))
-                .imagenPersona(imagenPersona)
+                .imagenPersona(imagenCliente)
                 .telefono("2616683926")
                 .build();
 
-        cliente.getDomicilios().add(domicilioPersona);
+        cliente.getDomicilios().add(domicilioCliente);
 
         this.clienteRepository.save(cliente);
+        ImagenPersona imagenEmpleado = ImagenPersona.builder()
+                .url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAboyCmArPxbW8rOU6NKGEfdDyT-M_2PNLXw&s")
+                .build();
+
+        Empleado empleado = Empleado.builder()
+                .nombre("Pedro")
+                .apellido("Gonzalez")
+                .fechaNacimiento(LocalDate.of(2003,6,12))
+                .imagenPersona(imagenEmpleado)
+                .telefono("2615583344")
+                .sucursal(sucursal1)
+                .build();
+
+        this.empleadoRepository.save(empleado);
     }
 }
