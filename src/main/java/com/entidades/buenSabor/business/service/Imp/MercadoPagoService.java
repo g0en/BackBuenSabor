@@ -34,13 +34,13 @@ public class MercadoPagoService {
             // Crear item de la preferencia
             PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
                     .id(String.valueOf(1234))
-                    .title("ASD")
-                    .description("Pedido realizado desde el carrito de compras")
-                    .pictureUrl("http://picture.com/PS5")
-                    .categoryId("art") // Ejemplo de categoría correcta, ajusta según sea necesario
+                    .title("Carrito de compras del Buen Sabor")
+                    .description("Pedido realizado desde el carrito de compras del Buen Sabor")
+                    .pictureUrl("https://www.bupasalud.com/sites/default/files/inline-images/bupa_598072389.jpg")
+                    .categoryId("art")
                     .quantity(1)
-                    .currencyId("ARS") // Asegúrate de usar el código de moneda correcto
-                    .unitPrice(new BigDecimal(1))
+                    .currencyId("ARS")
+                    .unitPrice(new BigDecimal(4000))
                     .build();
             List<PreferenceItemRequest> items = new ArrayList<>();
             items.add(itemRequest);
@@ -55,7 +55,6 @@ public class MercadoPagoService {
             // Crear la solicitud de preferencia
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(items)
-                    .backUrls(backUrls)
                     .build();
 
             // Cliente de Mercado Pago

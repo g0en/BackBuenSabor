@@ -51,7 +51,7 @@ dependencies {
 	implementation 'org.hibernate.orm:hibernate-envers:6.4.4.Final'
 
 	//Mercado Pago
-	implementation 'com.mercadopago:sdk-java:2.1.23'
+	implementation 'com.mercadopago:sdk-java:2.1.21'
 }
 
 tasks.named('test') {
