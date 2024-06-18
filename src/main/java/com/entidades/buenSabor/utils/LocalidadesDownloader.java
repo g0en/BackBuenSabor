@@ -136,7 +136,7 @@ class LocalidadesDownloader implements CommandLineRunner {
                 .nombre("Sucursal 1 MCC")
                 .horarioApertura(LocalTime.of(12,30,0))
                 .horarioCierre(LocalTime.of(20,30,0))
-                .esCasaMatriz(false)
+                .esCasaMatriz(true)
                 .domicilio(domicilioSucursal)
                 .empresa(empresa1)
                 .build();

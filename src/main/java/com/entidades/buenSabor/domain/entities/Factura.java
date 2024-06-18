@@ -29,6 +29,4 @@ public class Factura extends Base{
     private String mpPaymentType;
     private FormaPago formaPago;
     private Double totalVenta;
-
-
 }

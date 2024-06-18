@@ -128,7 +128,7 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
                 .cp(pedido.getDomicilio().getCp())
                 .piso(pedido.getDomicilio().getPiso())
                 .nroDpto(pedido.getDomicilio().getNroDpto())
-                .localidad(localidadRepository.getById(pedido.getDomicilio().getLocalidadId()))
+                //.localidad(localidadRepository.getById(pedido.getDomicilio().getLocalidadId()))
                 .build();
 
         Set<DetallePedido> detallePedidos = new HashSet<>();
