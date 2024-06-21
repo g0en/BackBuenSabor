@@ -163,6 +163,11 @@ public class CategoriaServiceImp extends BaseServiceImp<Categoria, Long> impleme
         this.categoriaRepository.save(categoriaExistente);
     }
 
+    @Override
+    public List<Categoria> findByEmpresa(Long idEmpresa) {
+        return this.categoriaRepository.findCategoriasByEmpresaId(idEmpresa);
+    }
+
 
     @Override
     public void deleteById(Long id) {
