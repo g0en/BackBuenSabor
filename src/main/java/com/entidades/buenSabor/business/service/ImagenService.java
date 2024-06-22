@@ -10,6 +10,6 @@ import java.util.UUID;
 public interface ImagenService {
     ResponseEntity<List<Map<String, Object>>> getAllImages();
     ResponseEntity<String> uploadImages(MultipartFile[] files);
-    ResponseEntity<String> deleteImage(String publicId, UUID uuid);
+    ResponseEntity<String> deleteImage(String publicId, Long id);
 
 }

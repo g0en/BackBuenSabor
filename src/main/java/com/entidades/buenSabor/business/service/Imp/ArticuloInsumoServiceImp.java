@@ -163,7 +163,7 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
                 break;
             }
         }
-        if (!hayDetalles) {
+        if (hayDetalles) {
             throw new RuntimeException("No se puede eliminar el articulo porque está presente en un detalle");
         }
 

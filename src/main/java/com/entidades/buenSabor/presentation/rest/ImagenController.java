@@ -29,12 +29,10 @@ public class ImagenController {
     }
 
     @PostMapping("/deleteImg")
-    public ResponseEntity<String> deleteById(
-            @RequestParam(value = "publicId", required = true) String publicId,
-            @RequestParam(value = "uuid", required = true) String uuidString) {
+    public ResponseEntity<String> deleteById(@RequestParam("publicId") String publicId, @RequestParam("id") Long id) {
         try {
-            UUID uuid = UUID.fromString(uuidString);
-            return this.imagenService.deleteImage(publicId, uuid);
+            //UUID uuid = UUID.fromString(uuidString);
+            return this.imagenService.deleteImage(publicId, id);
         } catch (IllegalArgumentException e) {
             // UUID.fromString lanzará una IllegalArgumentException si la cadena no es un UUID válido
             e.printStackTrace();

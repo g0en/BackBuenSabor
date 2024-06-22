@@ -33,7 +33,7 @@ public class CloudinaryServiceImp implements CloudinaryService {
             return null;
         }}
     @Override
-    public ResponseEntity<String> deleteImage(String publicId, UUID idBd) {
+    public ResponseEntity<String> deleteImage(String publicId, Long id) {
         try {
             // Eliminar la imagen en Cloudinary
             Map response = cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());

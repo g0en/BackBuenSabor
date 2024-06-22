@@ -4,6 +4,7 @@ import com.entidades.buenSabor.business.service.CloudinaryService;
 import com.entidades.buenSabor.business.service.ImagenService;
 import com.entidades.buenSabor.domain.entities.ImagenArticulo;
 import com.entidades.buenSabor.repositories.ImagenArticuloRepository;
+import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,7 @@ public class ImagenServiceImp implements ImagenService {
     @Override
     public ResponseEntity<String> uploadImages(MultipartFile[] files) {
         List<String> urls = new ArrayList<>();
+        List<Long> ids = new ArrayList<>();
         try {
             for (MultipartFile file : files) {
 
@@ -63,12 +65,18 @@ public class ImagenServiceImp implements ImagenService {
 
                 // Agregar la URL a la lista de URLs
                 urls.add(image.getUrl());
-                imageRepository.save(image);
+                image = imageRepository.save(image);
+                ids.add(image.getId());
             };
+
+            JSONObject responseJson = new JSONObject();
+            responseJson.put("status", "OK");
+            responseJson.put("urls", urls);
+            responseJson.put("ids", ids); // Incluir los IDs en la respuesta
 
 
             // Convertir la lista de URLs a un array de strings y devolver como JSON
-            return new ResponseEntity<>("{\"status\":\"OK\", \"urls\":" + urls + "}", HttpStatus.OK);
+            return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
 
 
         } catch (Exception e) {
@@ -79,11 +87,11 @@ public class ImagenServiceImp implements ImagenService {
 
     }
     @Override
-    public ResponseEntity<String> deleteImage(String publicId, UUID idBd) {
-        Long id = idBd.getMostSignificantBits();
+    public ResponseEntity<String> deleteImage(String publicId, Long id) {
+        //Long id = idBd.getMostSignificantBits();
         try {
-            imageRepository.deleteById(id);
-            return cloudinaryService.deleteImage(publicId, idBd);
+            //imageRepository.deleteById(id);
+            return cloudinaryService.deleteImage(publicId, id);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>("{\"status\":\"ERROR\", \"message\":\"" + e.getMessage() + "\"}", HttpStatus.BAD_REQUEST);

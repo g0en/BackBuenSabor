@@ -18,8 +18,8 @@ public class ArticuloInsumoController extends BaseControllerImp<ArticuloInsumo, 
         super(facade);
     }
 
-    @GetMapping("/findBySucursales/{sucursalId}")
-    public ResponseEntity<?> findBySucursales(@PathVariable Long idSucursal) {
+    @GetMapping("/findBySucursal/{idSucursal}")
+    public ResponseEntity<?> findBySucursales(@PathVariable("idSucursal") Long idSucursal) {
         return ResponseEntity.ok(facade.findBySucursales(idSucursal));
     }
 }

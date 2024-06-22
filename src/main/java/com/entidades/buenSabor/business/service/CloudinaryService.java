@@ -10,5 +10,5 @@ public interface CloudinaryService {
     default String uploadFile(MultipartFile file) {
         return null;
     }
-    ResponseEntity<String> deleteImage(String publicId, UUID uuid);
+    ResponseEntity<String> deleteImage(String publicId, Long id);
 }
