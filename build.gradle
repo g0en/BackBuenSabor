@@ -52,6 +52,11 @@ dependencies {
 
 	//Mercado Pago
 	implementation 'com.mercadopago:sdk-java:2.1.21'
+
+	//CLOUDINARY
+	implementation 'com.cloudinary:cloudinary-http44:1.36.0'
+	implementation 'com.cloudinary:cloudinary-taglib:1.36.0'
+	implementation 'io.github.cdimascio:dotenv-java:2.2.4'
 }
 
 tasks.named('test') {
