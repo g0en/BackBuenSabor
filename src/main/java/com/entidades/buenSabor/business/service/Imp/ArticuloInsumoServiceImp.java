@@ -169,4 +169,9 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
 
         super.deleteById(id);
     }
+
+    @Override
+    public List<ArticuloInsumo> findBySucursales(Long idSucursal) {
+        return this.articuloInsumoRepository.findBySucursales(idSucursal);
+    }
 }

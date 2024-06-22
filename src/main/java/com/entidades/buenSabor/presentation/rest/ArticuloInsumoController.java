@@ -5,9 +5,10 @@ import com.entidades.buenSabor.business.facade.Imp.DomicilioFacadeImp;
 import com.entidades.buenSabor.domain.dto.ArticuloInsumoDto;
 import com.entidades.buenSabor.domain.entities.ArticuloInsumo;
 import com.entidades.buenSabor.presentation.rest.Base.BaseControllerImp;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/articuloInsumo")
@@ -15,5 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class ArticuloInsumoController extends BaseControllerImp<ArticuloInsumo, ArticuloInsumoDto, ArticuloInsumoDto, Long, ArticuloInsumoFacadeImp> {
     public ArticuloInsumoController(ArticuloInsumoFacadeImp facade) {
         super(facade);
+    }
+
+    @GetMapping("/findBySucursales/{sucursalId}")
+    public ResponseEntity<?> findBySucursales(@PathVariable Long idSucursal) {
+        return ResponseEntity.ok(facade.findBySucursales(idSucursal));
     }
 }
