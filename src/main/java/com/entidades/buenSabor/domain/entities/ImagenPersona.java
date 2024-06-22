@@ -3,6 +3,7 @@ package com.entidades.buenSabor.domain.entities;
 import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.envers.Audited;
 
 @Entity
 @AllArgsConstructor
@@ -10,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @Getter
 @SuperBuilder
+@Audited
 public class ImagenPersona extends Base{
     private String url;
 }
