@@ -18,13 +18,13 @@ import java.util.Set;
 @Setter
 @SuperBuilder
 @Inheritance(strategy = InheritanceType.JOINED)
-@Audited
+//@Audited
 public class Articulo  extends Base {
 
     protected String denominacion;
     protected Double precioVenta;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany()
     //SE AGREGA EL JOIN COLUMN PARA QUE JPA NO CREE LA TABLA INTERMEDIA EN UNA RELACION ONE TO MANY
     //DE ESTA MANERA PONE EL FOREIGN KEY 'cliente_id' EN LA TABLA DE LOS MANY
     @JoinColumn(name = "articulo_id")

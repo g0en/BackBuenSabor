@@ -2,6 +2,7 @@ package com.entidades.buenSabor.business.service.Imp;
 
 import com.entidades.buenSabor.business.service.ArticuloInsumoService;
 import com.entidades.buenSabor.business.service.Base.BaseServiceImp;
+import com.entidades.buenSabor.business.service.ImagenService;
 import com.entidades.buenSabor.domain.entities.*;
 import com.entidades.buenSabor.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
 
     @Autowired
     private ArticuloManufacturadoDetalleRepository articuloManufacturadoDetalleRepository;
+
+    @Autowired
+    private ImagenService imagenService;
 
     @Override
     public ArticuloInsumo create(ArticuloInsumo articuloInsumo) {
@@ -165,6 +169,12 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
         }
         if (hayDetalles) {
             throw new RuntimeException("No se puede eliminar el articulo porque está presente en un detalle");
+        }
+
+        for(ImagenArticulo imagen : insumo.getImagenes()){
+            if(imagen.getId() != null){
+                this.imagenService.deleteById(imagen.getId());
+            }
         }
 
         super.deleteById(id);

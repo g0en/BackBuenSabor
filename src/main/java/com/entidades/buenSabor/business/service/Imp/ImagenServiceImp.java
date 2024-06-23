@@ -1,5 +1,6 @@
 package com.entidades.buenSabor.business.service.Imp;
 
+import com.entidades.buenSabor.business.service.Base.BaseServiceImp;
 import com.entidades.buenSabor.business.service.CloudinaryService;
 import com.entidades.buenSabor.business.service.ImagenService;
 import com.entidades.buenSabor.domain.entities.ImagenArticulo;
@@ -14,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 
 @Service
-public class ImagenServiceImp implements ImagenService {
+public class ImagenServiceImp extends BaseServiceImp<ImagenArticulo, Long> implements ImagenService{
     @Autowired
     private CloudinaryService cloudinaryService;
     @Autowired
@@ -44,29 +45,25 @@ public class ImagenServiceImp implements ImagenService {
     }
 
     @Override
-    public ResponseEntity<String> uploadImages(MultipartFile[] files) {
+    public List<ImagenArticulo> uploadImages(MultipartFile[] files) {
         List<String> urls = new ArrayList<>();
         List<Long> ids = new ArrayList<>();
+        List<ImagenArticulo> imagenes = new ArrayList<>();
         try {
             for (MultipartFile file : files) {
 
-
-                if (file.getName().isEmpty()) {
-                    return ResponseEntity.badRequest().build();
-                }
-
-
                 ImagenArticulo image = new ImagenArticulo();
                 image.setUrl(cloudinaryService.uploadFile(file));
-                if (image.getUrl() == null) {
+                /*if (image.getUrl() == null) {
                     return ResponseEntity.badRequest().build();
-                }
+                }*/
 
 
                 // Agregar la URL a la lista de URLs
                 urls.add(image.getUrl());
                 image = imageRepository.save(image);
                 ids.add(image.getId());
+                imagenes.add(image);
             };
 
             JSONObject responseJson = new JSONObject();
@@ -76,21 +73,23 @@ public class ImagenServiceImp implements ImagenService {
 
 
             // Convertir la lista de URLs a un array de strings y devolver como JSON
-            return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
+            //return new ResponseEntity<>(responseJson.toString(), HttpStatus.OK);
 
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("{\"status\":\"ERROR\", \"message\":\"" + e.getMessage() + "\"}", HttpStatus.BAD_REQUEST);
+            //return new ResponseEntity<>("{\"status\":\"ERROR\", \"message\":\"" + e.getMessage() + "\"}", HttpStatus.BAD_REQUEST);
         }
+
+        return imagenes;
 
 
     }
     @Override
-    public ResponseEntity<String> deleteImage(String publicId, Long id) {
-        //Long id = idBd.getMostSignificantBits();
+    public ResponseEntity<String> deleteImage(String publicId, String id) {
+        //Long idImage = Long.parseLong(id);
         try {
-            //imageRepository.deleteById(id);
+            //imageRepository.deleteById(idImage);
             return cloudinaryService.deleteImage(publicId, id);
         } catch (Exception e) {
             e.printStackTrace();

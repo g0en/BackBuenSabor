@@ -1,6 +1,7 @@
 package com.entidades.buenSabor.presentation.rest;
 
 import com.entidades.buenSabor.business.service.ImagenService;
+import com.entidades.buenSabor.domain.entities.ImagenArticulo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class ImagenController {
     private ImagenService imagenService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadImages(
+    public List<ImagenArticulo> uploadImages(
             @RequestParam(value = "uploads", required = true) MultipartFile[] files) {
         try {
             return this.imagenService.uploadImages(files);
@@ -29,12 +30,10 @@ public class ImagenController {
     }
 
     @PostMapping("/deleteImg")
-    public ResponseEntity<String> deleteById(@RequestParam("publicId") String publicId, @RequestParam("id") Long id) {
+    public ResponseEntity<String> deleteById(@RequestParam("publicId") String publicId, @RequestParam("id") String id) {
         try {
-            //UUID uuid = UUID.fromString(uuidString);
             return this.imagenService.deleteImage(publicId, id);
         } catch (IllegalArgumentException e) {
-            // UUID.fromString lanzará una IllegalArgumentException si la cadena no es un UUID válido
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Invalid UUID format");
         } catch (Exception e) {
