@@ -4,9 +4,8 @@ import com.entidades.buenSabor.business.facade.Imp.ArticuloManufacturadoFacadeIm
 import com.entidades.buenSabor.domain.dto.ArticuloManufacturadoDto;
 import com.entidades.buenSabor.domain.entities.ArticuloManufacturado;
 import com.entidades.buenSabor.presentation.rest.Base.BaseControllerImp;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/articuloManufacturado")
@@ -15,5 +14,8 @@ public class ArticuloManufacturadoController extends BaseControllerImp<ArticuloM
     public ArticuloManufacturadoController(ArticuloManufacturadoFacadeImp facade){
         super(facade);
     }
-
+    @GetMapping("/findBySucursal/{idSucursal}")
+    public ResponseEntity<?> findBySucursales(@PathVariable("idSucursal") Long idSucursal) {
+        return ResponseEntity.ok(facade.findBySucursales(idSucursal));
+    }
 }
