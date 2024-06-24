@@ -91,12 +91,8 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
 
     @Override
     public ArticuloInsumo update(ArticuloInsumo newArticuloInsumo, Long id) {
-        ArticuloInsumo articuloInsumoExistente = this.articuloInsumoRepository.findById(id).get();
-
-        //Validar el insumo a editar
-        if (articuloInsumoExistente == null) {
-            throw new RuntimeException("Insumo no encontrado: { id: " + id + " }");
-        }
+        ArticuloInsumo articuloInsumoExistente = this.articuloInsumoRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Insumo no encontrado: { id: " + id + " }"));
 
         //Validaciones iniciales
         if(newArticuloInsumo.getStockActual() < newArticuloInsumo.getStockMinimo()){
@@ -105,33 +101,39 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
             throw new RuntimeException("El stock minimo o maximo debe ser mayor a cero.");
         }
 
-        //Validacion de categorias
-        if(newArticuloInsumo.getCategoria() != null){
-            Categoria categoria = categoriaRepository.getById(newArticuloInsumo.getCategoria().getId());
-            if (categoria == null ) {
-                throw new RuntimeException("La categoría con id: " + newArticuloInsumo.getCategoria().getId() + " no existe.");
-            }else if(!categoria.isEsInsumo()){
+        // Validación de categorías
+        if (newArticuloInsumo.getCategoria() != null) {
+            Categoria categoria = categoriaRepository.findById(newArticuloInsumo.getCategoria().getId()).orElseThrow(() ->
+                    new RuntimeException("La categoría con id: " + newArticuloInsumo.getCategoria().getId() + " no existe."));
+            if (!categoria.isEsInsumo()) {
                 throw new RuntimeException("La categoria ingresada no es para insumos.");
             }
-
             newArticuloInsumo.setCategoria(categoria);
-        }else{
+        } else {
             throw new RuntimeException("No se ingreso categoria para el insumo.");
         }
 
-        Set<ImagenArticulo> imagenes = newArticuloInsumo.getImagenes();
+        // Gestión de imágenes
+        Set<ImagenArticulo> imagenesExistentes = articuloInsumoExistente.getImagenes();
+        Set<ImagenArticulo> imagenesNuevas = newArticuloInsumo.getImagenes();
         Set<ImagenArticulo> imagenesPersistidas = new HashSet<>();
 
-        if(!imagenes.isEmpty()){
-            for (ImagenArticulo imagen : imagenes) {
-                if (imagen.getId() != null) {
-                    Optional<ImagenArticulo> imagenBd = imagenArticuloRepository.findById(imagen.getId());
-                    imagenBd.ifPresent(imagenesPersistidas::add);
-                } else {
-                    imagen.setEliminado(false);
-                    ImagenArticulo savedImagen = imagenArticuloRepository.save(imagen);
-                    imagenesPersistidas.add(savedImagen);
-                }
+        // Eliminar imágenes que no están en el nuevo ArticuloInsumo
+        for (ImagenArticulo imagenExistente : imagenesExistentes) {
+            if (imagenesNuevas.stream().noneMatch(imagenNueva -> imagenNueva.getId().equals(imagenExistente.getId()))) {
+                this.imagenService.deleteById(imagenExistente.getId());
+            }
+        }
+
+        // Guardar o mantener imágenes nuevas
+        for (ImagenArticulo imagenNueva : imagenesNuevas) {
+            if (imagenNueva.getId() != null) {
+                Optional<ImagenArticulo> imagenBd = imagenArticuloRepository.findById(imagenNueva.getId());
+                imagenBd.ifPresent(imagenesPersistidas::add);
+            } else {
+                imagenNueva.setEliminado(false);
+                ImagenArticulo savedImagen = imagenArticuloRepository.save(imagenNueva);
+                imagenesPersistidas.add(savedImagen);
             }
         }
 
@@ -139,11 +141,12 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
             newArticuloInsumo.setImagenes(imagenesPersistidas);
         }
 
-        //Validacion Unidad de Medida
-        if(newArticuloInsumo.getUnidadMedida() != null){
-            UnidadMedida unidadMedida = this.unidadMedidaRepository.findById(newArticuloInsumo.getUnidadMedida().getId()).get();
+        // Validación Unidad de Medida
+        if (newArticuloInsumo.getUnidadMedida() != null) {
+            UnidadMedida unidadMedida = this.unidadMedidaRepository.findById(newArticuloInsumo.getUnidadMedida().getId()).orElseThrow(() ->
+                    new RuntimeException("Unidad de medida no encontrada: { id: " + newArticuloInsumo.getUnidadMedida().getId() + " }"));
             newArticuloInsumo.setUnidadMedida(unidadMedida);
-        }else{
+        } else {
             throw new RuntimeException("No se ingreso unidad de medida para el insumo.");
         }
 
