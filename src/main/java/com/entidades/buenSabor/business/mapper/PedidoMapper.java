@@ -11,5 +11,5 @@ import java.util.List;
 public interface PedidoMapper extends BaseMapper<Pedido, PedidoDto, PedidoGetDto>{
     PedidoGetDto toDTO(Pedido source);
     Pedido toEntity(PedidoGetDto source);
-    List<PedidoDto> toDTOsList(List<Pedido> source);
+    List<PedidoGetDto> toDTOsList(List<Pedido> source);
 }

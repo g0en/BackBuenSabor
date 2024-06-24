@@ -162,7 +162,7 @@ public class CategoriaServiceImp extends BaseServiceImp<Categoria, Long> impleme
         //Verificar que no tenga sucursales ni articulos asociados
         if(!categoria.getSucursales().isEmpty()){
             throw new RuntimeException("No se puede eliminar la categoría, tiene sucursales asociadas.");
-        }else if(!hayArticulos) {
+        }else if(hayArticulos) {
             throw new RuntimeException("No se puede eliminar la categoría, tiene articulos asociados.");
         }else{
             super.deleteById(id);

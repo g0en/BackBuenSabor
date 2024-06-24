@@ -11,6 +11,6 @@ import java.util.List;
 public interface CategoriaMapper extends BaseMapper<Categoria, CategoriaDto, CategoriaGetDto>{
     CategoriaGetDto toDTO(Categoria source);
     Categoria toEntity(CategoriaDto source);
-    List<CategoriaDto> toDTOsList(List<Categoria> source);
+    List<CategoriaGetDto> toDTOsList(List<Categoria> source);
     List<Categoria> toEntitiesList(List<CategoriaDto> source);
 }

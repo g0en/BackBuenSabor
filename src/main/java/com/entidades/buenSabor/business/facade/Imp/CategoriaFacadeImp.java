@@ -31,7 +31,7 @@ public class CategoriaFacadeImp extends BaseFacadeImp<Categoria, CategoriaDto, C
     }
 
     @Override
-    public List<CategoriaDto> findByEmpresa(Long idEmpresa) {
+    public List<CategoriaGetDto> findByEmpresa(Long idEmpresa) {
         return this.categoriaMapper.toDTOsList(this.categoriaService.findByEmpresa(idEmpresa));
     }
 }

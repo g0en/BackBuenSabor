@@ -8,5 +8,5 @@ import com.entidades.buenSabor.domain.dto.SucursalDto;
 import java.util.List;
 
 public interface CategoriaFacade extends BaseFacade<CategoriaDto, CategoriaGetDto, Long> {
-    List<CategoriaDto> findByEmpresa(Long idEmpresa);
+    List<CategoriaGetDto> findByEmpresa(Long idEmpresa);
 }
