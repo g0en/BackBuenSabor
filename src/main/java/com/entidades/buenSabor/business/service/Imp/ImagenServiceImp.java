@@ -87,9 +87,9 @@ public class ImagenServiceImp extends BaseServiceImp<ImagenArticulo, Long> imple
     }
     @Override
     public ResponseEntity<String> deleteImage(String publicId, String id) {
-        //Long idImage = Long.parseLong(id);
+        Long idImage = Long.parseLong(id);
         try {
-            //imageRepository.deleteById(idImage);
+            deleteById(idImage);
             return cloudinaryService.deleteImage(publicId, id);
         } catch (Exception e) {
             e.printStackTrace();

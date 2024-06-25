@@ -105,7 +105,7 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
         if (newArticuloInsumo.getCategoria() != null) {
             Categoria categoria = categoriaRepository.findById(newArticuloInsumo.getCategoria().getId()).orElseThrow(() ->
                     new RuntimeException("La categoría con id: " + newArticuloInsumo.getCategoria().getId() + " no existe."));
-            if (!categoria.isEsInsumo()) {
+            if (categoria.isEsInsumo()) {
                 throw new RuntimeException("La categoria ingresada no es para insumos.");
             }
             newArticuloInsumo.setCategoria(categoria);
@@ -165,19 +165,13 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
         List<ArticuloManufacturadoDetalle> insumoEsUtilizado = this.articuloManufacturadoDetalleRepository.getByArticuloInsumo(insumo);
 
         for(ArticuloManufacturadoDetalle detalles : insumoEsUtilizado){
-            if(detalles.isEliminado()){
+            if(!detalles.isEliminado()){
                 hayDetalles = true;
                 break;
             }
         }
         if (hayDetalles) {
             throw new RuntimeException("No se puede eliminar el articulo porque está presente en un detalle");
-        }
-
-        for(ImagenArticulo imagen : insumo.getImagenes()){
-            if(imagen.getId() != null){
-                this.imagenService.deleteById(imagen.getId());
-            }
         }
 
         super.deleteById(id);
