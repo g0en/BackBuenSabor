@@ -3,6 +3,7 @@ package com.entidades.buenSabor.business.service.Imp;
 import com.entidades.buenSabor.business.service.ArticuloInsumoService;
 import com.entidades.buenSabor.business.service.ArticuloManufacturadoService;
 import com.entidades.buenSabor.business.service.Base.BaseServiceImp;
+import com.entidades.buenSabor.business.service.ImagenService;
 import com.entidades.buenSabor.domain.entities.*;
 import com.entidades.buenSabor.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class ArticuloManufacturadoServiceImp extends BaseServiceImp<ArticuloManu
 
     @Autowired
     private ArticuloManufacturadoDetalleRepository articuloManufacturadoDetalleRepository;
+    @Autowired
+    private ImagenService imagenService;
 
 
     @Override
@@ -139,20 +142,30 @@ public class ArticuloManufacturadoServiceImp extends BaseServiceImp<ArticuloManu
             throw new RuntimeException("No se ingreso categoria para el insumo.");
         }
 
-        Set<ImagenArticulo> imagenes = articuloManufacturado.getImagenes();
+        // Gestión de imágenes
+        Set<ImagenArticulo> imagenesExistentes = articuloManufacturadoExistente.getImagenes();
+        Set<ImagenArticulo> imagenesNuevas = articuloManufacturado.getImagenes();
         Set<ImagenArticulo> imagenesPersistidas = new HashSet<>();
 
-        //Validacion de Imagenes
-        if(!imagenes.isEmpty()){
-            for (ImagenArticulo imagen : imagenes) {
-                if (imagen.getId() != null) {
-                    Optional<ImagenArticulo> imagenBd = imagenArticuloRepository.findById(imagen.getId());
-                    imagenBd.ifPresent(imagenesPersistidas::add);
-                } else {
-                    imagen.setEliminado(false);
-                    ImagenArticulo savedImagen = imagenArticuloRepository.save(imagen);
-                    imagenesPersistidas.add(savedImagen);
-                }
+        // Eliminar imágenes que no están en el nuevo Articulo Manufacturado
+        for (ImagenArticulo imagenExistente : imagenesExistentes) {
+            if (imagenesNuevas.stream().noneMatch(imagenNueva -> imagenNueva.getId().equals(imagenExistente.getId()))) {
+                String url = imagenExistente.getUrl();
+                String publicId = url.substring(url.lastIndexOf("/") + 1);
+                //Se eliminad de cloudinary
+                this.imagenService.deleteImage(publicId, imagenExistente.getId().toString());
+            }
+        }
+
+        // Guardar o mantener imágenes nuevas
+        for (ImagenArticulo imagenNueva : imagenesNuevas) {
+            if (imagenNueva.getId() != null) {
+                Optional<ImagenArticulo> imagenBd = imagenArticuloRepository.findById(imagenNueva.getId());
+                imagenBd.ifPresent(imagenesPersistidas::add);
+            } else {
+                imagenNueva.setEliminado(false);
+                ImagenArticulo savedImagen = imagenArticuloRepository.save(imagenNueva);
+                imagenesPersistidas.add(savedImagen);
             }
         }
 
@@ -168,20 +181,31 @@ public class ArticuloManufacturadoServiceImp extends BaseServiceImp<ArticuloManu
             throw new RuntimeException("No se ingreso unidad de medida para el insumo.");
         }
 
-        //Validar Detalles del articulo manufacturado
-        if(!articuloManufacturado.getArticuloManufacturadoDetalles().isEmpty()){
-            //Agregar Detalles al articulo manufacturado
-            Set<ArticuloManufacturadoDetalle> articuloManufacturadoDetalles = new HashSet<>();
+        // Gestión de detalles de articulo manufacturado
+        Set<ArticuloManufacturadoDetalle> detallesExistentes = articuloManufacturadoExistente.getArticuloManufacturadoDetalles();
+        Set<ArticuloManufacturadoDetalle> detallesNuevos = articuloManufacturado.getArticuloManufacturadoDetalles();
+        Set<ArticuloManufacturadoDetalle> detallesPersistidos = new HashSet<>();
 
-            for(ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()){
-                detalle.setArticuloInsumo(this.articuloInsumoService.getById(detalle.getArticuloInsumo().getId()));
-                articuloManufacturadoDetalles.add(detalle);
+        // Eliminar detalles que no están en el nuevo Articulo Manufacturado
+        for (ArticuloManufacturadoDetalle detalleExistente : detallesExistentes) {
+            if (detallesNuevos.stream().noneMatch(detalleNuevo -> detalleNuevo.getId().equals(detalleExistente.getId()))) {
+                articuloManufacturadoDetalleRepository.delete(detalleExistente);
             }
+        }
 
-            articuloManufacturado.setArticuloManufacturadoDetalles(articuloManufacturadoDetalles);
+        // Guardar o mantener detalles nuevos
+        for (ArticuloManufacturadoDetalle detalleNuevo : detallesNuevos) {
+            if (detalleNuevo.getId() > 0) {
+                Optional<ArticuloManufacturadoDetalle> detalleBd = articuloManufacturadoDetalleRepository.findById(detalleNuevo.getId());
+                detalleBd.ifPresent(detallesPersistidos::add);
+            } else {
+                ArticuloManufacturadoDetalle savedDetalle = articuloManufacturadoDetalleRepository.save(detalleNuevo);
+                detallesPersistidos.add(savedDetalle);
+            }
+        }
 
-        }else {
-            throw new RuntimeException("No se enviaron articulos manufacturados.");
+        if (!detallesPersistidos.isEmpty()) {
+            articuloManufacturado.setArticuloManufacturadoDetalles(detallesPersistidos);
         }
 
         return super.update(articuloManufacturado, id);
