@@ -130,7 +130,7 @@ public class ArticuloManufacturadoServiceImp extends BaseServiceImp<ArticuloManu
             Categoria categoria = categoriaRepository.getById(articuloManufacturado.getCategoria().getId());
             if (categoria == null ) {
                 throw new RuntimeException("La categoría con id: " + articuloManufacturado.getCategoria().getId() + " no existe.");
-            }else if(!categoria.isEsInsumo()){
+            }else if(categoria.isEsInsumo()){
                 throw new RuntimeException("La categoria ingresada no es para insumos.");
             }
 

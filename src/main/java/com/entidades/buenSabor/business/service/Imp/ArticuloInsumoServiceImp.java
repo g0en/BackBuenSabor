@@ -105,7 +105,7 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
         if (newArticuloInsumo.getCategoria() != null) {
             Categoria categoria = categoriaRepository.findById(newArticuloInsumo.getCategoria().getId()).orElseThrow(() ->
                     new RuntimeException("La categoría con id: " + newArticuloInsumo.getCategoria().getId() + " no existe."));
-            if (categoria.isEsInsumo()) {
+            if (!categoria.isEsInsumo()) {
                 throw new RuntimeException("La categoria ingresada no es para insumos.");
             }
             newArticuloInsumo.setCategoria(categoria);
@@ -121,7 +121,10 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
         // Eliminar imágenes que no están en el nuevo ArticuloInsumo
         for (ImagenArticulo imagenExistente : imagenesExistentes) {
             if (imagenesNuevas.stream().noneMatch(imagenNueva -> imagenNueva.getId().equals(imagenExistente.getId()))) {
-                this.imagenService.deleteById(imagenExistente.getId());
+                String url = imagenExistente.getUrl();
+                String publicId = url.substring(url.lastIndexOf("/") + 1);
+                //Se eliminad de cloudinary
+                this.imagenService.deleteImage(publicId, imagenExistente.getId().toString());
             }
         }
 
