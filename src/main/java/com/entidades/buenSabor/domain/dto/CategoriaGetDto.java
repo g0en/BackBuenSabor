@@ -16,6 +16,6 @@ public class CategoriaGetDto extends BaseDto{
     private String denominacion;
     private boolean esInsumo;
     private Set<SucursalShortDto> sucursales;
-    private Set<CategoriaShortDto> subCategorias;
+    private Set<CategoriaDto> subCategorias;
     private CategoriaShortDto categoriaPadre;
 }
