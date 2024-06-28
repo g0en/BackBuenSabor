@@ -192,4 +192,9 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
     public List<ArticuloInsumo> findBySucursales(Long idSucursal) {
         return this.articuloInsumoRepository.findBySucursales(idSucursal);
     }
+
+    @Override
+    public List<ArticuloInsumo> paraVenta(Long idSucursal) {
+        return this.articuloInsumoRepository.findAllArticuloInsumosWithEsParaElaborarFalse(idSucursal);
+    }
 }

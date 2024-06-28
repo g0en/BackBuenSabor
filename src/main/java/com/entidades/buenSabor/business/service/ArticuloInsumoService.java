@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ArticuloInsumoService extends BaseService<ArticuloInsumo, Long> {
     List<ArticuloInsumo> findBySucursales(Long idSucursal);
+    List<ArticuloInsumo> paraVenta(Long idSucursal);
 }

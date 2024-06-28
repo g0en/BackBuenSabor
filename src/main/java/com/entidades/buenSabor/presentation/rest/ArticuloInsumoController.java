@@ -22,4 +22,9 @@ public class ArticuloInsumoController extends BaseControllerImp<ArticuloInsumo, 
     public ResponseEntity<?> findBySucursales(@PathVariable("idSucursal") Long idSucursal) {
         return ResponseEntity.ok(facade.findBySucursales(idSucursal));
     }
+
+    @GetMapping("/paraVenta/{idSucursal}")
+    public ResponseEntity<?> paraVenta(@PathVariable("idSucursal") Long idSucursal) {
+        return ResponseEntity.ok(facade.paraVenta(idSucursal));
+    }
 }
