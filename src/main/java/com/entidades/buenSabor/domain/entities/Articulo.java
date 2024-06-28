@@ -41,5 +41,6 @@ public class Articulo  extends Base {
     @JsonIgnoreProperties("articulos")
     private Categoria categoria;
 
-
+    @ManyToOne
+    protected Sucursal sucursal;
 }

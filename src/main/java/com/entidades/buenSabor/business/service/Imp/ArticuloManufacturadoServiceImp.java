@@ -35,8 +35,11 @@ public class ArticuloManufacturadoServiceImp extends BaseServiceImp<ArticuloManu
 
     @Autowired
     private ArticuloManufacturadoDetalleRepository articuloManufacturadoDetalleRepository;
+
     @Autowired
     private ImagenService imagenService;
+    @Autowired
+    private SucursalRepository sucursalRepository;
 
 
     @Override
@@ -108,6 +111,11 @@ public class ArticuloManufacturadoServiceImp extends BaseServiceImp<ArticuloManu
         }else{
             throw new RuntimeException("No se enviaron articulos manufacturados.");
         }
+
+        //Asigno sucursal
+        Sucursal sucursal = this.sucursalRepository.findById(articuloManufacturado.getSucursal().getId())
+                .orElseThrow(() -> new RuntimeException("Sucursal no encontrada: {id: " + articuloManufacturado.getSucursal().getId() + " }"));
+        articuloManufacturado.setSucursal(sucursal);
 
         return super.create(articuloManufacturado);
     }
@@ -205,6 +213,12 @@ public class ArticuloManufacturadoServiceImp extends BaseServiceImp<ArticuloManu
         }
 
         if (!detallesPersistidos.isEmpty()) {
+            for(ArticuloManufacturadoDetalle detalle : detallesPersistidos){
+                if(detalle.isEliminado()){
+                    detalle.setEliminado(false);
+                }
+            }
+
             articuloManufacturado.setArticuloManufacturadoDetalles(detallesPersistidos);
         }
 

@@ -33,6 +33,9 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
     @Autowired
     private ImagenService imagenService;
 
+    @Autowired
+    private SucursalRepository sucursalRepository;
+
     @Override
     public ArticuloInsumo create(ArticuloInsumo articuloInsumo) {
 
@@ -85,6 +88,11 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
         }else{
             throw new RuntimeException("No se ingreso unidad de medida para el insumo.");
         }
+
+        //Asigno sucursal
+        Sucursal sucursal = this.sucursalRepository.findById(articuloInsumo.getSucursal().getId())
+                .orElseThrow(() -> new RuntimeException("Sucursal no encontrada: {id: " + articuloInsumo.getSucursal().getId() + " }"));
+        articuloInsumo.setSucursal(sucursal);
 
         return super.create(articuloInsumo);
     }

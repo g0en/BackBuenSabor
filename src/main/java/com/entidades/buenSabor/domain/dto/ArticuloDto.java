@@ -12,9 +12,10 @@ import java.util.Set;
 @Setter
 @Getter
 public class ArticuloDto extends BaseDto{
-    protected String denominacion;
-    protected Double precioVenta;
-    protected Set<ImagenArticuloDto> imagenes = new HashSet<>();
-    protected UnidadMedidaDto unidadMedida;
-    protected CategoriaShortDto categoria;
+    private String denominacion;
+    private Double precioVenta;
+    private Set<ImagenArticuloDto> imagenes = new HashSet<>();
+    private UnidadMedidaDto unidadMedida;
+    private CategoriaShortDto categoria;
+    private SucursalShortDto sucursal;
 }

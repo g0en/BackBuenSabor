@@ -13,8 +13,7 @@ import java.util.List;
 public interface ArticuloInsumoRepository extends BaseRepository<ArticuloInsumo,Long> {
     List<ArticuloInsumo> getByCategoria(Categoria categoria);
     @Query("SELECT ai FROM ArticuloInsumo ai " +
-            "JOIN ai.categoria c " +
-            "JOIN c.sucursales s " +
+            "JOIN ai.sucursal s " +
             "WHERE s.id = :idSucursal")
     List<ArticuloInsumo> findBySucursales(@Param("idSucursal") Long idSucursal);
 }
