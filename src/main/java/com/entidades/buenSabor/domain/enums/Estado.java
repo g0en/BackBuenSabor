@@ -1,9 +1,11 @@
 package com.entidades.buenSabor.domain.enums;
 
 public enum Estado {
-    PREPARACION,
+
     PENDIENTE,
-    CANCELADO,
-    RECHAZADO,
-    ENTREGADO
+    FACTURADO,
+    PREPARACION,
+    DELIVERY,
+    ENTREGADO,
+    CANCELADO
 }

@@ -7,9 +7,11 @@ import com.entidades.buenSabor.business.service.Base.BaseServiceImp;
 import com.entidades.buenSabor.business.service.PedidoService;
 import com.entidades.buenSabor.business.service.SucursalService;
 import com.entidades.buenSabor.domain.dto.PedidoDto;
+import com.entidades.buenSabor.domain.dto.PedidoShortDto;
 import com.entidades.buenSabor.domain.entities.*;
 import com.entidades.buenSabor.domain.enums.Estado;
 import com.entidades.buenSabor.domain.enums.FormaPago;
+import com.entidades.buenSabor.domain.enums.Rol;
 import com.entidades.buenSabor.domain.enums.TipoEnvio;
 import com.entidades.buenSabor.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -164,6 +167,24 @@ public class PedidoServiceImp extends BaseServiceImp<Pedido,Long> implements Ped
         pedidoEntidad.fechaPedido(LocalDate.now());
 
         return super.create(pedidoEntidad.build());
+    }
+
+    public List<PedidoShortDto> getByRol(Rol rol, long sucursalId){
+
+        switch (rol){
+            case ADMIN:
+//                pedidoRepository.getByEstado
+                throw new RuntimeException("ROL ERROR");
+            case CAJERO:
+                return pedidoRepository.getByEstado(0,1,sucursalId);
+            case COCINERO:
+                return pedidoRepository.getByEstado(2,2,sucursalId);
+            case DELIVERY:
+                return pedidoRepository.getByEstado(3,3,sucursalId);
+            default:
+                throw new RuntimeException("ROL ERROR");
+
+        }
     }
 
     public Double totalCosto(Set<DetallePedido> detallePedidos){
