@@ -17,4 +17,10 @@ public class SucursalServiceImp extends BaseServiceImp<Sucursal,Long> implements
     public List<Sucursal> sucursalByEmpresaId(Long idEmpresa){
         return this.sucursalRepository.findAllByEmpresaId(idEmpresa);
     }
+
+    @Override
+    public List<Sucursal> findByCategorias(Long idSucursal) {
+        return null;
+        //this.sucursalRepository.findByCategorias(idSucursal)
+    }
 }

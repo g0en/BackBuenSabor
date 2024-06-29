@@ -14,7 +14,8 @@ public interface ArticuloManufacturadoRepository extends BaseRepository<Articulo
     List<ArticuloManufacturado> getByCategoria(Categoria categoria);
 
     @Query("SELECT am FROM ArticuloManufacturado am " +
-            "JOIN am.sucursal s " +
+            "JOIN am.categoria c " +
+            "JOIN c.sucursales s " +
             "WHERE s.id = :idSucursal")
     List<ArticuloManufacturado> findBySucursales(@Param("idSucursal") Long idSucursal);
 }

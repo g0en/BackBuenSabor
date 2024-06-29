@@ -36,9 +36,4 @@ public class ArticuloInsumoFacadeImp extends BaseFacadeImp<ArticuloInsumo, Artic
     public List<ArticuloInsumoDto> paraVenta(Long idSucursal) {
         return this.articuloInsumoMapper.toDTOsList(this.articuloInsumoService.paraVenta(idSucursal));
     }
-
-    @Override
-    public ArticuloInsumoDto bajaInsumo(Long idInusmo) {
-        return this.articuloInsumoMapper.toDTO(this.articuloInsumoService.bajaInsumo(idInusmo));
-    }
 }

@@ -112,11 +112,6 @@ public class ArticuloManufacturadoServiceImp extends BaseServiceImp<ArticuloManu
             throw new RuntimeException("No se enviaron articulos manufacturados.");
         }
 
-        //Asigno sucursal
-        Sucursal sucursal = this.sucursalRepository.findById(articuloManufacturado.getSucursal().getId())
-                .orElseThrow(() -> new RuntimeException("Sucursal no encontrada: {id: " + articuloManufacturado.getSucursal().getId() + " }"));
-        articuloManufacturado.setSucursal(sucursal);
-
         return super.create(articuloManufacturado);
     }
 

@@ -25,4 +25,9 @@ public class SucursalController extends BaseControllerImp<Sucursal, SucursalDto,
     public ResponseEntity<?> sucursalByEmpresaId(@PathVariable("id") Long idEmpresa){
         return ResponseEntity.ok(facade.sucursalByEmpresaId(idEmpresa));
     }
+
+    @GetMapping("/findByCategorias/{idSucursal}")
+    public ResponseEntity<?> findByCategorias(@PathVariable("idSucursal") Long idSucursal){
+        return ResponseEntity.ok(facade.findByCategorias(idSucursal));
+    }
 }

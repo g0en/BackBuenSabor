@@ -89,11 +89,6 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
             throw new RuntimeException("No se ingreso unidad de medida para el insumo.");
         }
 
-        //Asigno sucursal
-        Sucursal sucursal = this.sucursalRepository.findById(articuloInsumo.getSucursal().getId())
-                .orElseThrow(() -> new RuntimeException("Sucursal no encontrada: {id: " + articuloInsumo.getSucursal().getId() + " }"));
-        articuloInsumo.setSucursal(sucursal);
-
         articuloInsumo.setHabilitado(true);
 
         return super.create(articuloInsumo);
@@ -163,6 +158,23 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
             throw new RuntimeException("No se ingreso unidad de medida para el insumo.");
         }
 
+        if(!newArticuloInsumo.isHabilitado()){
+            boolean hayDetalles = false;
+
+            //Verificar si el insumo tiene detalles asociado
+            List<ArticuloManufacturadoDetalle> insumoEsUtilizado = this.articuloManufacturadoDetalleRepository.getByArticuloInsumo(newArticuloInsumo);
+
+            for(ArticuloManufacturadoDetalle detalles : insumoEsUtilizado){
+                if(!detalles.isEliminado()){
+                    hayDetalles = true;
+                    break;
+                }
+            }
+            if (hayDetalles) {
+                throw new RuntimeException("No se puede eliminar el articulo porque está presente en un detalle");
+            }
+        }
+
         return super.update(newArticuloInsumo, id);
     }
 
@@ -198,13 +210,5 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
     @Override
     public List<ArticuloInsumo> paraVenta(Long idSucursal) {
         return this.articuloInsumoRepository.findAllArticuloInsumosWithEsParaElaborarFalse(idSucursal);
-    }
-
-    @Override
-    public ArticuloInsumo bajaInsumo(Long idInsumo) {
-        ArticuloInsumo articuloInsumo = this.articuloInsumoRepository.findById(idInsumo)
-                .orElseThrow(() -> new RuntimeException("No se encontro el insumo con id: " + idInsumo));
-        articuloInsumo.setHabilitado(false);
-        return articuloInsumo;
     }
 }

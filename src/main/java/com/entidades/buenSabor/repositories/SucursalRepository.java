@@ -16,4 +16,7 @@ public interface SucursalRepository extends BaseRepository<Sucursal,Long> {
 
     @Query("SELECT s FROM Sucursal s WHERE s.empresa.id = :id")
     List<Sucursal> findAllByEmpresaId(@Param("id") Long id);
+
+
+    //List<Sucursal> findByCategorias(@Param("idSucursal") Long idSucursal);
 }

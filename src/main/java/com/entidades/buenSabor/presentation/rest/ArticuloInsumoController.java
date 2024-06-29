@@ -27,9 +27,4 @@ public class ArticuloInsumoController extends BaseControllerImp<ArticuloInsumo, 
     public ResponseEntity<?> paraVenta(@PathVariable("idSucursal") Long idSucursal) {
         return ResponseEntity.ok(facade.paraVenta(idSucursal));
     }
-
-    @DeleteMapping("/baja/{idInusmo}")
-    public ResponseEntity<?> bajaInsumo(@PathVariable("idInusmo") Long idInusmo) {
-        return ResponseEntity.ok(facade.bajaInsumo(idInusmo));
-    }
 }

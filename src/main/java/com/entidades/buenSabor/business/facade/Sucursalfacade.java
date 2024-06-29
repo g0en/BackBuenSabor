@@ -5,6 +5,7 @@ import com.entidades.buenSabor.domain.dto.SucursalDto;
 
 import java.util.List;
 
-public interface Sucursalfacade extends BaseFacade<SucursalDto, SucursalDto, Long> {
+public interface SucursalFacade extends BaseFacade<SucursalDto, SucursalDto, Long> {
     List<SucursalDto> sucursalByEmpresaId(Long idEmpresa);
+    List<SucursalDto> findByCategorias(Long idSucursal);
 }

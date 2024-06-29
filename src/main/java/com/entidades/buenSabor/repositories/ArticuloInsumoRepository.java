@@ -13,12 +13,12 @@ import java.util.List;
 public interface ArticuloInsumoRepository extends BaseRepository<ArticuloInsumo,Long> {
     List<ArticuloInsumo> getByCategoria(Categoria categoria);
     @Query("SELECT ai FROM ArticuloInsumo ai " +
-            "JOIN ai.sucursal s " +
+            "JOIN ai.categoria c " +
+            "JOIN c.sucursales s " +
             "WHERE s.id = :idSucursal")
     List<ArticuloInsumo> findBySucursales(@Param("idSucursal") Long idSucursal);
 
-    @Query("SELECT ai FROM ArticuloInsumo ai WHERE ai.esParaElaborar = false AND ai.sucursal.id = :idSucursal")
+    @Query("SELECT ai FROM ArticuloInsumo ai JOIN ai.categoria c JOIN c.sucursales s WHERE ai.esParaElaborar = false AND s.id = :idSucursal")
     List<ArticuloInsumo> findAllArticuloInsumosWithEsParaElaborarFalse(@Param("idSucursal") Long idSucursal);
-
 
 }

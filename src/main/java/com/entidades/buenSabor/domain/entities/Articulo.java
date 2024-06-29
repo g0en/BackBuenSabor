@@ -41,9 +41,4 @@ public class Articulo  extends Base {
     @JoinColumn(name = "categoria_id")
     @JsonIgnoreProperties("articulos")
     private Categoria categoria;
-
-    @ManyToOne
-    @JoinColumn(name = "sucursal_id")
-    @JsonIgnoreProperties("articulos")
-    protected Sucursal sucursal;
 }
