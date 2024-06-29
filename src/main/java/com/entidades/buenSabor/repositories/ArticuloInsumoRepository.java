@@ -19,4 +19,6 @@ public interface ArticuloInsumoRepository extends BaseRepository<ArticuloInsumo,
 
     @Query("SELECT ai FROM ArticuloInsumo ai WHERE ai.esParaElaborar = false AND ai.sucursal.id = :idSucursal")
     List<ArticuloInsumo> findAllArticuloInsumosWithEsParaElaborarFalse(@Param("idSucursal") Long idSucursal);
+
+
 }

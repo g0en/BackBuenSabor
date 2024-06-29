@@ -94,6 +94,8 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
                 .orElseThrow(() -> new RuntimeException("Sucursal no encontrada: {id: " + articuloInsumo.getSucursal().getId() + " }"));
         articuloInsumo.setSucursal(sucursal);
 
+        articuloInsumo.setHabilitado(true);
+
         return super.create(articuloInsumo);
     }
 
@@ -196,5 +198,13 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
     @Override
     public List<ArticuloInsumo> paraVenta(Long idSucursal) {
         return this.articuloInsumoRepository.findAllArticuloInsumosWithEsParaElaborarFalse(idSucursal);
+    }
+
+    @Override
+    public ArticuloInsumo bajaInsumo(Long idInsumo) {
+        ArticuloInsumo articuloInsumo = this.articuloInsumoRepository.findById(idInsumo)
+                .orElseThrow(() -> new RuntimeException("No se encontro el insumo con id: " + idInsumo));
+        articuloInsumo.setHabilitado(false);
+        return articuloInsumo;
     }
 }

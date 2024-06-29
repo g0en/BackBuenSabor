@@ -23,6 +23,7 @@ public class Articulo  extends Base {
 
     protected String denominacion;
     protected Double precioVenta;
+    protected boolean habilitado;
 
     @OneToMany()
     //SE AGREGA EL JOIN COLUMN PARA QUE JPA NO CREE LA TABLA INTERMEDIA EN UNA RELACION ONE TO MANY
@@ -42,5 +43,7 @@ public class Articulo  extends Base {
     private Categoria categoria;
 
     @ManyToOne
+    @JoinColumn(name = "sucursal_id")
+    @JsonIgnoreProperties("articulos")
     protected Sucursal sucursal;
 }
