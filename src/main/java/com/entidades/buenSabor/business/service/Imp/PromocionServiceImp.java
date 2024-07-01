@@ -41,7 +41,13 @@ public class PromocionServiceImp extends BaseServiceImp<Promocion, Long> impleme
     @Autowired
     private ImagenPromocionService imagenPromocionService;
 
-    @Transactional
+    @Autowired
+    private ImagenPromocionRepository imagenPromocionRepository;
+
+    @Autowired
+    private SucursalService sucursalService;
+
+    @Override
     public Promocion create(Promocion promocion) {
         Set<Sucursal> sucursales = new HashSet<>();
 
@@ -52,8 +58,43 @@ public class PromocionServiceImp extends BaseServiceImp<Promocion, Long> impleme
             sucursalBd.getPromociones().add(promocion);
             sucursales.add(sucursalBd);
         }
-        Promocion nuevaPromocion = createPromocion(promocion, sucursales);
-        return promocionRepository.save(nuevaPromocion);
+
+        promocion.setSucursales(sucursales);
+        promocion.setHabilitado(true);
+
+        Set<PromocionDetalle> detalles = promocion.getPromocionDetalles();
+        Set<PromocionDetalle> nuevosDetalles = new HashSet<>();
+
+        //Ingresar Articulos Manufacturados a detalles
+        if (detalles != null && !detalles.isEmpty()) {
+            for (PromocionDetalle detalle : detalles) {
+                Articulo articuloExistente = articuloRepository.findById(detalle.getArticulo().getId())
+                        .orElseThrow(() -> new RuntimeException("Uno de los artículos enviados no es válido."));
+                if (articuloExistente instanceof ArticuloInsumo)
+                    articuloExistente = articuloInsumoRepository.findById(detalle.getArticulo().getId())
+                            .orElseThrow(() -> new RuntimeException("No se encontro el insumo."));
+                else if (articuloExistente instanceof ArticuloManufacturado)
+                    articuloExistente = articuloManufacturadoRepository.findById(detalle.getArticulo().getId())
+                            .orElseThrow(() -> new RuntimeException("No se encontro el manufacturado."));
+                else
+                    throw new RuntimeException("El artículo " + detalle.getArticulo().getDenominacion() + " no se ha encontrado.");
+
+                if (articuloExistente == null) {
+                    throw new RuntimeException("El artículo " + detalle.getArticulo().getDenominacion() + " no se ha encontrado.");
+                }
+                PromocionDetalle nuevoDetalle = new PromocionDetalle();
+                nuevoDetalle.setCantidad(detalle.getCantidad());
+                nuevoDetalle.setArticulo(articuloExistente);
+                nuevosDetalles.add(nuevoDetalle);
+            }
+            promocion.setPromocionDetalles(nuevosDetalles);
+        } else {
+            throw new RuntimeException("La promoción debe tener al menos un detalle.");
+        }
+
+        //Promocion nuevaPromocion = createPromocion(promocion, sucursales);
+
+        return super.create(promocion);
     }
 
     private Promocion createPromocion(Promocion promocion, Set<Sucursal> sucursales) {
@@ -109,42 +150,115 @@ public class PromocionServiceImp extends BaseServiceImp<Promocion, Long> impleme
         Promocion promocionExistente = promocionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("La promoción con id " + id + " no se ha encontrado"));
 
+        // Actualizar Imágenes
         updateImagenes(promocion, promocionExistente);
 
-        // Eliminar detalles antiguos
-        promocionDetalleRepository.deleteAll(promocionExistente.getPromocionDetalles());
+        // Actualizar Detalles
+        updateDetalles(promocion, promocionExistente);
 
-        Set<PromocionDetalle> nuevosDetalles = promocion.getPromocionDetalles();
-        if (nuevosDetalles == null || nuevosDetalles.isEmpty()) {
-            throw new RuntimeException("La promoción debe tener al menos un detalle.");
+        // Actualizar Sucursales
+        Set<Sucursal> nuevasSucursales = new HashSet<>();
+        for (Sucursal sucursal : promocion.getSucursales()) {
+            Sucursal sucursalBd = sucursalService.getById(sucursal.getId());
+            if (sucursalBd == null) {
+                throw new RuntimeException("La sucursal con el id " + sucursal.getId() + " no existe.");
+            }
+
+            // Asegurar que la promoción está en la lista de promociones de la sucursal
+            if (sucursalBd.getPromociones().stream().noneMatch(prom -> prom.getId().equals(promocionExistente.getId()))) {
+                sucursalBd.getPromociones().add(promocionExistente);
+                sucursalRepository.save(sucursalBd); // Guardar sucursal actualizada
+            }
+
+            nuevasSucursales.add(sucursalBd);
         }
 
-        Set<PromocionDetalle> detallesActualizados = new HashSet<>();
-        for (PromocionDetalle detalle : nuevosDetalles) {
-            Articulo articulo = articuloRepository.findById(detalle.getArticulo().getId())
-                    .orElseThrow(() -> new RuntimeException("El artículo con id " + detalle.getArticulo().getId() + " no se ha encontrado"));
-            PromocionDetalle nuevoDetalle = new PromocionDetalle();
-            nuevoDetalle.setCantidad(detalle.getCantidad());
-            nuevoDetalle.setArticulo(articulo);
-            detallesActualizados.add(nuevoDetalle);
+        // Eliminar la promoción de las sucursales que se quitaron
+        Set<Sucursal> sucursalesAEliminar = new HashSet<>(promocionExistente.getSucursales());
+        sucursalesAEliminar.removeAll(nuevasSucursales);
+
+        for (Sucursal sucursal : sucursalesAEliminar) {
+            sucursal.getPromociones().remove(promocionExistente);
+            sucursalRepository.save(sucursal); // Guardar sucursal actualizada
         }
 
-        promocion.setPromocionDetalles(detallesActualizados);
+        // Asignar las nuevas sucursales a la promoción existente
+        promocion.setSucursales(nuevasSucursales);
 
         return promocionRepository.save(promocion);
     }
 
-    private void updateImagenes(Promocion promocion, Promocion promocionExistente) {
-        Set<ImagenPromocion> imagenes = promocion.getImagenes();
-        Set<ImagenPromocion> imagenesEliminadas = new HashSet<>(promocionExistente.getImagenes());
-        imagenesEliminadas.removeAll(imagenes);
 
-        for (ImagenPromocion imagen : imagenesEliminadas) {
-            String publicId = imagen.getUrl().substring(imagen.getUrl().lastIndexOf("/") + 1);
-            imagenPromocionService.deleteImage(publicId, imagen.getId().toString());
+    private void updateImagenes(Promocion promocion, Promocion promocionExistente) {
+        // Gestión de imágenes
+        Set<ImagenPromocion> imagenesExistentes = promocionExistente.getImagenes();
+        Set<ImagenPromocion> imagenesNuevas = promocion.getImagenes();
+        Set<ImagenPromocion> imagenesPersistidas = new HashSet<>();
+
+        // Eliminar imágenes que no están en el nuevo Articulo Manufacturado
+        for (ImagenPromocion imagenExistente : imagenesExistentes) {
+            if (imagenesNuevas.stream().noneMatch(imagenNueva -> imagenNueva.getId().equals(imagenExistente.getId()))) {
+                String url = imagenExistente.getUrl();
+                String publicId = url.substring(url.lastIndexOf("/") + 1);
+                //Se eliminad de cloudinary
+                this.imagenPromocionService.deleteImage(publicId, imagenExistente.getId().toString());
+            }
         }
 
-        promocionExistente.setImagenes(imagenes);
+        // Guardar o mantener imágenes nuevas
+        for (ImagenPromocion imagenNueva : imagenesNuevas) {
+            if (imagenNueva.getId() != null) {
+                Optional<ImagenPromocion> imagenBd = imagenPromocionRepository.findById(imagenNueva.getId());
+                imagenBd.ifPresent(imagenesPersistidas::add);
+            } else {
+                imagenNueva.setEliminado(false);
+                ImagenPromocion savedImagen = imagenPromocionRepository.save(imagenNueva);
+                imagenesPersistidas.add(savedImagen);
+            }
+        }
+
+        if (!imagenesPersistidas.isEmpty()) {
+            promocion.setImagenes(imagenesPersistidas);
+        }
+    }
+
+    public void updateDetalles(Promocion promocion, Promocion promocionExistente){
+        // Gestión de detalles de articulo manufacturado
+        Set<PromocionDetalle> detallesExistentes = promocionExistente.getPromocionDetalles();
+        Set<PromocionDetalle> detallesNuevos = promocion.getPromocionDetalles();
+        Set<PromocionDetalle> detallesPersistidos = new HashSet<>();
+
+        // Eliminar detalles que no están en el nuevo Articulo Manufacturado
+        for (PromocionDetalle detalleExistente : detallesExistentes) {
+            if (detallesNuevos.stream().noneMatch(detalleNuevo -> detalleNuevo.getId().equals(detalleExistente.getId()))) {
+                promocionDetalleRepository.delete(detalleExistente);
+            }
+        }
+
+        // Guardar o mantener detalles nuevos
+        for (PromocionDetalle detalleNuevo : detallesNuevos) {
+            if (detalleNuevo.getId() != null) {
+                Optional<PromocionDetalle> detalleBdOptional = promocionDetalleRepository.findById(detalleNuevo.getId());
+
+                detalleBdOptional.ifPresent(detalleBd -> {
+                    detalleBd.setCantidad(detalleNuevo.getCantidad());
+                    detallesPersistidos.add(detalleBd);
+                });
+            } else {
+                PromocionDetalle savedDetalle = promocionDetalleRepository.save(detalleNuevo);
+                detallesPersistidos.add(savedDetalle);
+            }
+        }
+
+        if (!detallesPersistidos.isEmpty()) {
+            for(PromocionDetalle detalle : detallesPersistidos){
+                /*if(detalle.isEliminado()){
+                    detalle.setEliminado(false);
+                }*/
+            }
+
+            promocion.setPromocionDetalles(detallesPersistidos);
+        }
     }
 
     @Override

@@ -11,11 +11,13 @@ import java.util.List;
 
 @Repository
 public interface ArticuloManufacturadoRepository extends BaseRepository<ArticuloManufacturado,Long> {
-    List<ArticuloManufacturado> getByCategoria(Categoria categoria);
-
     @Query("SELECT am FROM ArticuloManufacturado am " +
             "JOIN am.categoria c " +
             "JOIN c.sucursales s " +
-            "WHERE s.id = :idSucursal")
+            "WHERE s.id = :idSucursal " +
+            "ORDER BY am.habilitado DESC")
     List<ArticuloManufacturado> findBySucursales(@Param("idSucursal") Long idSucursal);
+
+    @Query("SELECT am FROM ArticuloManufacturado am JOIN am.articuloManufacturadoDetalles det WHERE det.articuloInsumo.id = :idInsumo")
+    List<ArticuloManufacturado> findByArticuloInsumoId(@Param("idInsumo") Long idInsumo);
 }

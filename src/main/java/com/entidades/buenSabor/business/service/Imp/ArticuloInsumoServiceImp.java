@@ -34,7 +34,10 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
     private ImagenService imagenService;
 
     @Autowired
-    private SucursalRepository sucursalRepository;
+    private ArticuloManufacturadoRepository articuloManufacturadoRepository;
+
+    @Autowired
+    private PromocionRepository promocionRepository;
 
     @Override
     public ArticuloInsumo create(ArticuloInsumo articuloInsumo) {
@@ -160,18 +163,31 @@ public class ArticuloInsumoServiceImp extends BaseServiceImp<ArticuloInsumo,Long
 
         if(!newArticuloInsumo.isHabilitado()){
             boolean hayDetalles = false;
+            boolean hayPromociones = false;
 
             //Verificar si el insumo tiene detalles asociado
-            List<ArticuloManufacturadoDetalle> insumoEsUtilizado = this.articuloManufacturadoDetalleRepository.getByArticuloInsumo(newArticuloInsumo);
+            List<ArticuloManufacturado> insumoEsUtilizado = this.articuloManufacturadoRepository.findByArticuloInsumoId(id);
 
-            for(ArticuloManufacturadoDetalle detalles : insumoEsUtilizado){
-                if(!detalles.isEliminado()){
+            for(ArticuloManufacturado manufacturado : insumoEsUtilizado){
+                if(manufacturado.isHabilitado()){
                     hayDetalles = true;
                     break;
                 }
             }
             if (hayDetalles) {
-                throw new RuntimeException("No se puede eliminar el articulo porque está presente en un detalle");
+                throw new RuntimeException("No se puede eliminar el articulo porque está presente en un manufacturado");
+            }
+
+            List<Promocion> insumoEnPromocion = this.promocionRepository.findByArticuloInsumoId(id);
+            for(Promocion promocion : insumoEnPromocion){
+                if(promocion.isHabilitado()){
+                    hayPromociones = true;
+                    break;
+                }
+            }
+
+            if (hayPromociones) {
+                throw new RuntimeException("No se puede eliminar el articulo porque está presente en una promocion");
             }
         }
 

@@ -3,10 +3,7 @@ package com.entidades.buenSabor.business.service.Imp;
 import com.entidades.buenSabor.business.service.Base.BaseServiceImp;
 import com.entidades.buenSabor.business.service.CategoriaService;
 import com.entidades.buenSabor.business.service.SucursalService;
-import com.entidades.buenSabor.domain.entities.ArticuloInsumo;
-import com.entidades.buenSabor.domain.entities.ArticuloManufacturado;
-import com.entidades.buenSabor.domain.entities.Categoria;
-import com.entidades.buenSabor.domain.entities.Sucursal;
+import com.entidades.buenSabor.domain.entities.*;
 import com.entidades.buenSabor.repositories.ArticuloInsumoRepository;
 import com.entidades.buenSabor.repositories.ArticuloManufacturadoRepository;
 import com.entidades.buenSabor.repositories.CategoriaRepository;
@@ -160,6 +157,12 @@ public class CategoriaServiceImp extends BaseServiceImp<Categoria, Long> impleme
         Categoria categoriaExistente = this.categoriaRepository.findById(idCategoria)
                 .orElseThrow(() -> new RuntimeException("La categoría con el id: " + idCategoria + " no existe."));
 
+        List<Articulo> articulosAsociados = this.categoriaRepository.findArticulosByCategoriaId(idCategoria);
+
+        if(articulosAsociados != null && !articulosAsociados.isEmpty()){
+            throw new RuntimeException("No se puede dar de baja esta categoria, tiene articulos asociados.");
+        }
+
         Sucursal sucursal = this.sucursalService.getById(idSucursal);
 
         //Eliminar realcion entre sucursal y categoria
@@ -185,6 +188,12 @@ public class CategoriaServiceImp extends BaseServiceImp<Categoria, Long> impleme
     public void deleteById(Long id) {
         Categoria categoria = this.categoriaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("La categoría con el id: " + id + " no existe."));
+
+        List<Articulo> articulosAsociados = this.categoriaRepository.findArticulosByCategoriaId(id);
+
+        if(articulosAsociados != null && !articulosAsociados.isEmpty()){
+            throw new RuntimeException("No se puede eliminar esta categoria, tiene articulos asociados.");
+        }
 
         eliminarSubcategorias(categoria);
 

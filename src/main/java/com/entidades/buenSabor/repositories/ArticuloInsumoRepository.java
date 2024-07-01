@@ -15,7 +15,8 @@ public interface ArticuloInsumoRepository extends BaseRepository<ArticuloInsumo,
     @Query("SELECT ai FROM ArticuloInsumo ai " +
             "JOIN ai.categoria c " +
             "JOIN c.sucursales s " +
-            "WHERE s.id = :idSucursal")
+            "WHERE s.id = :idSucursal " +
+            "ORDER BY ai.habilitado DESC")
     List<ArticuloInsumo> findBySucursales(@Param("idSucursal") Long idSucursal);
 
     @Query("SELECT ai FROM ArticuloInsumo ai JOIN ai.categoria c JOIN c.sucursales s WHERE ai.esParaElaborar = false AND s.id = :idSucursal")

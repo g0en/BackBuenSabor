@@ -39,7 +39,7 @@ public class ArticuloManufacturadoServiceImp extends BaseServiceImp<ArticuloManu
     @Autowired
     private ImagenService imagenService;
     @Autowired
-    private SucursalRepository sucursalRepository;
+    private PromocionRepository promocionRepository;
 
 
     @Override
@@ -215,6 +215,22 @@ public class ArticuloManufacturadoServiceImp extends BaseServiceImp<ArticuloManu
             }
 
             articuloManufacturado.setArticuloManufacturadoDetalles(detallesPersistidos);
+        }
+
+        if(!articuloManufacturado.isHabilitado()) {
+            boolean hayPromociones = false;
+
+            List<Promocion> manufacturadoEnPromocion = this.promocionRepository.findByArticuloManufacturadoId(id);
+            for(Promocion promocion : manufacturadoEnPromocion){
+                if(promocion.isHabilitado()){
+                    hayPromociones = true;
+                    break;
+                }
+            }
+
+            if (hayPromociones) {
+                throw new RuntimeException("No se puede eliminar el articulo porque está presente en una promocion");
+            }
         }
 
         return super.update(articuloManufacturado, id);
