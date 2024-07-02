@@ -27,7 +27,7 @@ public abstract class Persona extends Base {
     protected String telefono;
     private LocalDate fechaNacimiento;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     protected Usuario usuario;
 
     @OneToOne(cascade = CascadeType.ALL)

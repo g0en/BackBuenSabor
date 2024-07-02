@@ -13,6 +13,5 @@ import lombok.Setter;
 public class UsuarioDto extends BaseDto{
     private String userName;
     private String email;
-    private String password;
     private Rol rol;
 }
