@@ -11,6 +11,5 @@ import java.util.Set;
 
 public interface PromocionService extends BaseService<Promocion, Long> {
     Promocion create(Promocion promocion);
-    List<Promocion> duplicateInOtherSucursales(Long id, Set<SucursalShortDto> sucursales);
     List<Promocion> findBySucursal(Long idSucursal);
 }

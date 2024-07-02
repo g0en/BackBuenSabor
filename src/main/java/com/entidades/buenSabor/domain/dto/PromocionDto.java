@@ -28,6 +28,7 @@ public class PromocionDto extends BaseDto{
     private LocalTime horaHasta;
     private String descripcionDescuento;
     private Double precioPromocional;
+    private boolean habilitado;
     private TipoPromocion tipoPromocion;
     private Set<ImagenArticuloDto> imagenes = new HashSet<>();
     private Set<SucursalShortDto> sucursales = new HashSet<>();

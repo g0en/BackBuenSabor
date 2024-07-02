@@ -10,7 +10,8 @@ import java.util.List;
 
 @Repository
 public interface PromocionRepository extends BaseRepository<Promocion,Long>{
-    @Query("SELECT p FROM Promocion p JOIN p.sucursales s WHERE s.id = :idSucursal")
+    @Query("SELECT p FROM Promocion p JOIN p.sucursales s WHERE s.id = :idSucursal " +
+            "ORDER BY (CASE WHEN p.fechaHasta >= CURRENT_DATE THEN 0 ELSE 1 END), p.fechaHasta DESC")
     List<Promocion> findAllWithSucursales(@Param("idSucursal") Long idSucursal);
 
     @Query("SELECT p FROM Promocion p JOIN p.promocionDetalles det WHERE det.articulo.id = :idInsumo")

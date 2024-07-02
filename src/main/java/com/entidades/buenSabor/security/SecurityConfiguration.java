@@ -50,6 +50,7 @@ public class SecurityConfiguration {
 //                                .requestMatchers("/api/client/**").hasAuthority("cliente")
 //                                .anyRequest().authenticated()
                 )
+                .headers(headers -> headers.frameOptions().disable())
                 .oauth2ResourceServer(oauth2ResourceServer ->
                         oauth2ResourceServer
                                 .jwt(jwt ->
@@ -58,6 +59,7 @@ public class SecurityConfiguration {
                                                 .jwtAuthenticationConverter(jwtAuthenticationConverter())
                                 )
                 );
+
         return http.build();
     }
 

@@ -115,6 +115,8 @@ class LocalidadesDownloader implements CommandLineRunner {
             localidadRepository.save(localidad);
         });
 
+        
+
         Empresa empresa1 = Empresa.builder()
                 .nombre("Empresa MCC")
                 .razonSocial("Razón Social")
@@ -142,7 +144,7 @@ class LocalidadesDownloader implements CommandLineRunner {
                 .build();
 
         sucursalRepository.save(sucursal1);
-
+        /*
         Set<Sucursal> sucursales = new HashSet<>();
         sucursales.add(sucursal1);
 
@@ -430,5 +432,7 @@ class LocalidadesDownloader implements CommandLineRunner {
                 .build();
 
         this.empleadoRepository.save(empleado);
+
+        */
     }
 }

@@ -60,7 +60,6 @@ public class PromocionServiceImp extends BaseServiceImp<Promocion, Long> impleme
         }
 
         promocion.setSucursales(sucursales);
-        promocion.setHabilitado(true);
 
         Set<PromocionDetalle> detalles = promocion.getPromocionDetalles();
         Set<PromocionDetalle> nuevosDetalles = new HashSet<>();
@@ -92,56 +91,7 @@ public class PromocionServiceImp extends BaseServiceImp<Promocion, Long> impleme
             throw new RuntimeException("La promoción debe tener al menos un detalle.");
         }
 
-        //Promocion nuevaPromocion = createPromocion(promocion, sucursales);
-
         return super.create(promocion);
-    }
-
-    private Promocion createPromocion(Promocion promocion, Set<Sucursal> sucursales) {
-        Promocion nuevaPromocion = new Promocion();
-        nuevaPromocion.setSucursales(sucursales);
-        nuevaPromocion.setTipoPromocion(promocion.getTipoPromocion());
-        nuevaPromocion.setPrecioPromocional(promocion.getPrecioPromocional());
-        nuevaPromocion.setDenominacion(promocion.getDenominacion());
-        nuevaPromocion.setFechaDesde(promocion.getFechaDesde());
-        nuevaPromocion.setFechaHasta(promocion.getFechaHasta());
-        nuevaPromocion.setHoraDesde(promocion.getHoraDesde());
-        nuevaPromocion.setHoraHasta(promocion.getHoraHasta());
-        nuevaPromocion.setDescripcionDescuento(promocion.getDescripcionDescuento());
-
-        nuevaPromocion.setImagenes(new HashSet<>(promocion.getImagenes()));
-
-        Set<PromocionDetalle> detalles = promocion.getPromocionDetalles();
-        Set<PromocionDetalle> nuevosDetalles = new HashSet<>();
-
-        //Ingresar Articulos Manufacturados a detalles
-        if (detalles != null && !detalles.isEmpty()) {
-            for (PromocionDetalle detalle : detalles) {
-                Articulo articuloExistente = articuloRepository.findById(detalle.getArticulo().getId())
-                        .orElseThrow(() -> new RuntimeException("Uno de los artículos enviados no es válido."));
-                if (articuloExistente instanceof ArticuloInsumo)
-                    articuloExistente = articuloInsumoRepository.findById(detalle.getArticulo().getId())
-                            .orElseThrow(() -> new RuntimeException("No se encontro el insumo."));
-                else if (articuloExistente instanceof ArticuloManufacturado)
-                    articuloExistente = articuloManufacturadoRepository.findById(detalle.getArticulo().getId())
-                            .orElseThrow(() -> new RuntimeException("No se encontro el manufacturado."));
-                else
-                    throw new RuntimeException("El artículo " + detalle.getArticulo().getDenominacion() + " no se ha encontrado.");
-
-                if (articuloExistente == null) {
-                    throw new RuntimeException("El artículo " + detalle.getArticulo().getDenominacion() + " no se ha encontrado.");
-                }
-                PromocionDetalle nuevoDetalle = new PromocionDetalle();
-                nuevoDetalle.setCantidad(detalle.getCantidad());
-                nuevoDetalle.setArticulo(articuloExistente);
-                nuevosDetalles.add(nuevoDetalle);
-            }
-            nuevaPromocion.setPromocionDetalles(nuevosDetalles);
-        } else {
-            throw new RuntimeException("La promoción debe tener al menos un detalle.");
-        }
-
-        return nuevaPromocion;
     }
 
     @Transactional
@@ -262,8 +212,18 @@ public class PromocionServiceImp extends BaseServiceImp<Promocion, Long> impleme
     }
 
     @Override
-    public List<Promocion> duplicateInOtherSucursales(Long id, Set<SucursalShortDto> sucursales) {
-        return null;
+    public void deleteById(Long id) {
+        Promocion promocion = this.promocionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("La promoción con id: " + id + " no existe."));
+
+        for(PromocionDetalle detalle : promocion.getPromocionDetalles()){
+            PromocionDetalle detalleBd = this.promocionDetalleRepository.findById(detalle.getId())
+                    .orElseThrow(() -> new RuntimeException("El detalle no existe"));
+            detalleBd.setEliminado(true);
+            this.promocionDetalleRepository.save(detalleBd);
+        }
+
+        super.deleteById(id);
     }
 
     @Override
