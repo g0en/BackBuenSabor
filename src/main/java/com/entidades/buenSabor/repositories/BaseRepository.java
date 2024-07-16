@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.io.Serializable;
@@ -42,7 +43,6 @@ public interface BaseRepository <E extends Base, ID extends Serializable> extend
         }
         return entity;
     }
-
     default List<E> getAll(){
         logger.info("EJECUTANDO GET ALL PERSONALIZADO");
         var entities = findAll().stream().filter(e -> !e.isEliminado()).toList();

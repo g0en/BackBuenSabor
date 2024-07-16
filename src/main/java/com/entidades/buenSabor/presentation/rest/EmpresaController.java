@@ -18,9 +18,4 @@ public class EmpresaController extends BaseControllerImp<Empresa, EmpresaDto, Em
     public EmpresaController(EmpresaFacadeImp facade) {
         super(facade);
     }
-
-    @PutMapping("/addSucursal/{idEmpresa}/{idSucursal}")
-    public ResponseEntity<EmpresaLargeDto> addSucursal(@PathVariable("idEmpresa") Long idEmpresa, @PathVariable("idSucursal") Long idSucursal){
-        return ResponseEntity.ok(facade.addSucursal(idEmpresa,idSucursal));
-    }
 }

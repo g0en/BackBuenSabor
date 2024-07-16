@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -32,9 +34,17 @@ public abstract class BaseServiceImp<E extends Base,ID extends Serializable> imp
 
     @Override
     public List<E> getAll(){
-        var entities = baseRepository.getAll();
-        logger.info("Obtenidas entidades {}",entities);
-        return entities;
+        try {
+            var entities = baseRepository.getAll();
+            logger.info("Obtenidas entidades {}", entities);
+            return entities;
+        } catch (MethodArgumentTypeMismatchException e) {
+            logger.error("Error al convertir argumento: ", e);
+            throw e;
+        } catch (Exception e) {
+            logger.error("Error inesperado al obtener entidades: ", e);
+            throw e;
+        }
     }
 
     @Override

@@ -12,6 +12,8 @@ import com.entidades.buenSabor.domain.entities.Empresa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmpresaFacadeImp extends BaseFacadeImp<Empresa, EmpresaDto, EmpresaDto,Long> implements EmpresaFacade {
 
@@ -28,5 +30,10 @@ public class EmpresaFacadeImp extends BaseFacadeImp<Empresa, EmpresaDto, Empresa
     @Override
     public EmpresaLargeDto addSucursal(Long idEmpresa, Long idSucursal) {
         return empresaMapper.toLargeDto(empresaService.addSucursal(idEmpresa, idSucursal));
+    }
+
+    @Override
+    public List<EmpresaDto> getAll() {
+        return super.getAll();
     }
 }
